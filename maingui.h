@@ -17,6 +17,9 @@ public:
     MainGUI(QWidget *parent = nullptr);
     ~MainGUI();
 
+private slots:
+    void on_directoryButton_clicked();
+
 private:
     Ui::MainGUI *ui;
 };
