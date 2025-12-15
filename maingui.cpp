@@ -18,6 +18,30 @@ MainGUI::~MainGUI()
 void MainGUI::on_directoryButton_clicked()
 {
     QString directoryPath = QFileDialog::getExistingDirectory(this, "Select destination directory", QDir::homePath());
-    ui->pathPrint->setText(directoryPath);
+    if (!directoryPath.isEmpty())
+    {
+        ui->pathPrint->setText(directoryPath);
+    }
+}
+
+
+
+void MainGUI::on_downloadButton_clicked()
+{
+    QString url = ui->urlInput->text();
+    QString directoryPath = ui->pathPrint->text();
+    bool flag = false;
+
+    if (url.isEmpty())
+    {
+        flag = true;
+    }
+
+    if (directoryPath.isEmpty())
+    {
+        flag = true;
+    }
+
+    if (flag) return;
 }
 

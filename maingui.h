@@ -20,6 +20,8 @@ public:
 private slots:
     void on_directoryButton_clicked();
 
+    void on_downloadButton_clicked();
+
 private:
     Ui::MainGUI *ui;
 };
