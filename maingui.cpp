@@ -8,6 +8,9 @@ MainGUI::MainGUI(QWidget *parent)
     , ui(new Ui::MainGUI)
 {
     ui->setupUi(this);
+
+    ui->urlErrorLabel->hide();
+    ui->pathErrorLabel->hide();
 }
 
 MainGUI::~MainGUI()
@@ -28,6 +31,10 @@ void MainGUI::on_directoryButton_clicked()
 
 void MainGUI::on_downloadButton_clicked()
 {
+    // set error labels invisible
+    ui->urlErrorLabel->hide();
+    ui->pathErrorLabel->hide();
+
     QString url = ui->urlInput->text();
     QString directoryPath = ui->pathPrint->text();
     bool flag = false;
@@ -35,13 +42,18 @@ void MainGUI::on_downloadButton_clicked()
     if (url.isEmpty())
     {
         flag = true;
+        ui->urlErrorLabel->show();
     }
 
     if (directoryPath.isEmpty())
     {
         flag = true;
+        ui->pathErrorLabel->show();
     }
 
     if (flag) return;
+
+    ui->urlErrorLabel->hide();
+    ui->pathErrorLabel->hide();
 }
 
