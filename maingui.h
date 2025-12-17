@@ -2,6 +2,7 @@
 #define MAINGUI_H
 
 #include <QMainWindow>
+#include <QProcess>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -22,7 +23,10 @@ private slots:
 
     void on_downloadButton_clicked();
 
+    void onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus);
+
 private:
     Ui::MainGUI *ui;
+    QProcess *process;
 };
 #endif // MAINGUI_H
