@@ -3,7 +3,8 @@
 #include <QFileDialog>
 #include <QDir>
 #include <QProcess>
-// #include <QMessageBox>
+#include <QStandardPaths>
+#include <QMessageBox>
 
 MainGUI::MainGUI(QWidget *parent)
     : QMainWindow(parent)
@@ -18,6 +19,25 @@ MainGUI::MainGUI(QWidget *parent)
 
     ui->urlErrorLabel->setStyleSheet("QLabel { color : FireBrick; }");
     ui->pathErrorLabel->setStyleSheet("QLabel { color : FireBrick; }");
+
+    // find needed binaries, disable download if not found
+    ytdlpPath = QStandardPaths::findExecutable("yt-dlp");
+    ytdlpPath = QStandardPaths::findExecutable("yt-dlp", {"/opt/homebrew/bin"});
+
+    if (ytdlpPath.isEmpty()) {
+        QMessageBox::warning(this, "Warning", "yt-dlp not found!");
+        ui->downloadButton->setEnabled(false);
+        ui->status->setText("Disabled, binaries not found.");
+    }
+
+    ffmpegPath = QStandardPaths::findExecutable("ffmpeg");
+    ffmpegPath = QStandardPaths::findExecutable("ffmpeg", {"/opt/homebrew/bin"});
+
+    if (ffmpegPath.isEmpty()) {
+        QMessageBox::warning(this, "Warning", "ffmpeg not found!");
+        ui->downloadButton->setEnabled(false);
+        ui->status->setText("Disabled, binaries not found.");
+    }
 }
 
 MainGUI::~MainGUI()
@@ -47,8 +67,8 @@ void MainGUI::on_downloadButton_clicked()
     ui->urlErrorLabel->hide();
     ui->pathErrorLabel->hide();
 
-    QString url = ui->urlInput->text();
-    QString directoryPath = ui->pathPrint->text();
+    QString url = ui->urlInput->text().trimmed();
+    QString directoryPath = ui->pathPrint->text().trimmed();
     bool flag = false;
 
     if (url.isEmpty())
@@ -79,20 +99,18 @@ void MainGUI::on_downloadButton_clicked()
 
     process->setWorkingDirectory(directoryPath);
 
-    QString command = "/opt/homebrew/bin/yt-dlp";
-    QString ffmpegLocation = "/opt/homebrew/bin/ffmpeg";
-
+    // arguments for download
     QStringList args;
     args << "-x"
          << "--audio-format" << "mp3"
-         << "--ffmpeg-location" << ffmpegLocation
+         << "--ffmpeg-location" << ffmpegPath
          << "-P" << directoryPath
          << url;
 
     ui->status->setStyleSheet("QLabel { color : gold; }");
     ui->status->setText("Starting download...");
 
-    process->start(command, args);
+    process->start(ytdlpPath, args);
 
     ui->status->setText("Downloading...");
 
@@ -105,17 +123,11 @@ void MainGUI::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
     ui->downloadButton->setEnabled(true);
     ui->downloadButton->setText("Download");
 
-    ui->status->setStyleSheet("QLabel { color : LawnGreen; }");
-    ui->status->setText("Download finished!");
-
-    // if (exitStatus == QProcess::NormalExit && exitCode == 0) {
-    //     ui->stdout->show();
-    //     ui->stdout->setText("Download completed successfully!");
-    //     QMessageBox::information(this, "Success", "Download completed!");
-    // } else {
-    //     ui->stderr->show();
-    //     QString errorMsg = process->readAllStandardError();
-    //     ui->stderr->setText("Error: " + errorMsg);
-    //     QMessageBox::warning(this, "Error", "Download failed!\nExit code: " + QString::number(exitCode));
-    // }
+    if (exitStatus == QProcess::NormalExit && exitCode == 0) {
+        ui->status->setStyleSheet("QLabel { color : LawnGreen; }");
+        ui->status->setText("Download finished!");
+    } else {
+        ui->status->setStyleSheet("QLabel { color : FireBrick; }");
+        ui->status->setText("Error, download failed!");
+    }
 }

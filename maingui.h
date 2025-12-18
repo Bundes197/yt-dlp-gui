@@ -28,5 +28,7 @@ private slots:
 private:
     Ui::MainGUI *ui;
     QProcess *process;
+    QString ytdlpPath;
+    QString ffmpegPath;
 };
 #endif // MAINGUI_H
