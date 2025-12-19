@@ -5,12 +5,13 @@
 #include <QProcess>
 #include <QStandardPaths>
 #include <QMessageBox>
+#include <QProgressBar>
+#include <QRegularExpression>
 
 MainGUI::MainGUI(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainGUI)
-    , process(nullptr)
-{
+    , process(nullptr) {
     ui->setupUi(this);
 
     // set error labels invisible by default
@@ -20,6 +21,10 @@ MainGUI::MainGUI(QWidget *parent)
     ui->urlErrorLabel->setStyleSheet("QLabel { color : FireBrick; }");
     ui->pathErrorLabel->setStyleSheet("QLabel { color : FireBrick; }");
 
+    detectBinaries();
+}
+
+void MainGUI::detectBinaries() {
     // find needed binaries, disable download if not found
     ytdlpPath = QStandardPaths::findExecutable("yt-dlp");
     ytdlpPath = QStandardPaths::findExecutable("yt-dlp", {"/opt/homebrew/bin"});
@@ -40,8 +45,7 @@ MainGUI::MainGUI(QWidget *parent)
     }
 }
 
-MainGUI::~MainGUI()
-{
+MainGUI::~MainGUI() {
     if (process) {
         process->kill();
         delete process;
@@ -50,8 +54,7 @@ MainGUI::~MainGUI()
     delete ui;
 }
 
-void MainGUI::on_directoryButton_clicked()
-{
+void MainGUI::on_directoryButton_clicked() {
     QString directoryPath = QFileDialog::getExistingDirectory(this, "Select destination directory", QDir::homePath());
     if (!directoryPath.isEmpty())
     {
@@ -59,10 +62,7 @@ void MainGUI::on_directoryButton_clicked()
     }
 }
 
-
-
-void MainGUI::on_downloadButton_clicked()
-{
+void MainGUI::on_downloadButton_clicked() {
     // reset labels
     ui->urlErrorLabel->hide();
     ui->pathErrorLabel->hide();
@@ -95,7 +95,9 @@ void MainGUI::on_downloadButton_clicked()
 
     process = new QProcess(this);
 
+    // connect to finished and newOutput events
     connect(process, &QProcess::finished, this, &MainGUI::onProcessFinished);
+    connect(process, &QProcess::readyReadStandardOutput, this, &MainGUI::onProcessNewOutput);
 
     process->setWorkingDirectory(directoryPath);
 
@@ -118,16 +120,37 @@ void MainGUI::on_downloadButton_clicked()
     ui->downloadButton->setText("Downloading...");
 }
 
-void MainGUI::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
-{
+void MainGUI::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
     ui->downloadButton->setEnabled(true);
     ui->downloadButton->setText("Download");
 
+    // set status according to exit code
     if (exitStatus == QProcess::NormalExit && exitCode == 0) {
         ui->status->setStyleSheet("QLabel { color : LawnGreen; }");
         ui->status->setText("Download finished!");
     } else {
         ui->status->setStyleSheet("QLabel { color : FireBrick; }");
         ui->status->setText("Error, download failed!");
+    }
+}
+
+void MainGUI::updateProgressBar(int value) {
+    ui->progressBar->setValue(value);
+}
+
+void MainGUI::onProcessNewOutput() {
+    QString newOutputLine = process->readLine();
+
+    // match download progress with regexp, update progress bar
+    if (newOutputLine.contains("[download]")) {
+        QRegularExpression regexp;
+        regexp.setPattern(R"((\d+\.?\d*)%)");
+
+        QRegularExpressionMatch match = regexp.match(newOutputLine);
+
+        if (match.hasMatch()) {
+            int capture = match.captured(1).toInt();
+            updateProgressBar(capture);
+        }
     }
 }

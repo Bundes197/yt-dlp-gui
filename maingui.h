@@ -10,8 +10,7 @@ class MainGUI;
 }
 QT_END_NAMESPACE
 
-class MainGUI : public QMainWindow
-{
+class MainGUI : public QMainWindow {
     Q_OBJECT
 
 public:
@@ -25,10 +24,16 @@ private slots:
 
     void onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus);
 
+    void onProcessNewOutput();
+
+    void updateProgressBar(int value);
+
 private:
     Ui::MainGUI *ui;
     QProcess *process;
     QString ytdlpPath;
     QString ffmpegPath;
+
+    void detectBinaries();
 };
 #endif // MAINGUI_H

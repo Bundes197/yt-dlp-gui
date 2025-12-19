@@ -54,7 +54,11 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="urlInput"/>
+       <widget class="QLineEdit" name="urlInput">
+        <property name="text">
+         <string>https://youtu.be/1idLDXCwVnE?si=M9inDCHw8Rm2Mt-B</string>
+        </property>
+       </widget>
       </item>
       <item>
        <spacer name="horizontalSpacer_2">
@@ -243,6 +247,16 @@
        </spacer>
       </item>
      </layout>
+    </item>
+    <item>
+     <widget class="QProgressBar" name="progressBar">
+      <property name="value">
+       <number>50</number>
+      </property>
+      <property name="invertedAppearance">
+       <bool>false</bool>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
