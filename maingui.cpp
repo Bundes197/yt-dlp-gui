@@ -8,10 +8,13 @@
 #include <QProgressBar>
 #include <QRegularExpression>
 
+#include <QStyleFactory>
+
 MainGUI::MainGUI(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainGUI)
     , process(nullptr) {
+
     ui->setupUi(this);
 
     // set error labels invisible by default
@@ -20,6 +23,8 @@ MainGUI::MainGUI(QWidget *parent)
 
     ui->urlErrorLabel->setStyleSheet("QLabel { color : FireBrick; }");
     ui->pathErrorLabel->setStyleSheet("QLabel { color : FireBrick; }");
+
+    ui->progressBar->setStyle(QStyleFactory::create("Fusion"));
 
     detectBinaries();
 }
@@ -149,7 +154,7 @@ void MainGUI::onProcessNewOutput() {
         QRegularExpressionMatch match = regexp.match(newOutputLine);
 
         if (match.hasMatch()) {
-            int capture = match.captured(1).toInt();
+            int capture = match.captured(1).toDouble();
             updateProgressBar(capture);
         }
     }
