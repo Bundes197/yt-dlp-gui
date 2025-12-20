@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QProcess>
+#include <QtWidgets/qlabel.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -34,6 +35,14 @@ private:
     QString ytdlpPath;
     QString ffmpegPath;
 
+    QColor errorColor;
+    QColor downloadColor;
+    QColor finishedColor;
+
     void detectBinaries();
+
+    void setLabelColor(QLabel * label, QColor color);
+
+    void updateUIColors(bool isDark);
 };
 #endif // MAINGUI_H

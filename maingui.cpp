@@ -7,8 +7,11 @@
 #include <QMessageBox>
 #include <QProgressBar>
 #include <QRegularExpression>
-
 #include <QStyleFactory>
+#include <QColor>
+#include <QPalette>
+#include <QGuiApplication>
+#include <QStyleHints>
 
 MainGUI::MainGUI(QWidget *parent)
     : QMainWindow(parent)
@@ -19,11 +22,23 @@ MainGUI::MainGUI(QWidget *parent)
 
     // set error labels invisible by default
     ui->urlErrorLabel->hide();
+
+    auto sp = ui->pathErrorLabel->sizePolicy();
+    sp.setRetainSizeWhenHidden(true);
+    ui->pathErrorLabel->setSizePolicy(sp);
     ui->pathErrorLabel->hide();
 
-    ui->urlErrorLabel->setStyleSheet("QLabel { color : FireBrick; }");
-    ui->pathErrorLabel->setStyleSheet("QLabel { color : FireBrick; }");
 
+    // connect color mode change in OS
+    auto hints = QGuiApplication::styleHints();
+    connect(hints, &QStyleHints::colorSchemeChanged, this, [this](Qt::ColorScheme scheme) {
+        updateUIColors(scheme == Qt::ColorScheme::Dark);
+    });
+
+    // initial color update
+    updateUIColors(hints->colorScheme() == Qt::ColorScheme::Dark);
+
+    // progress bar not natively rendering in macOS (idk why), using Fusion style
     ui->progressBar->setStyle(QStyleFactory::create("Fusion"));
 
     detectBinaries();
@@ -32,7 +47,9 @@ MainGUI::MainGUI(QWidget *parent)
 void MainGUI::detectBinaries() {
     // find needed binaries, disable download if not found
     ytdlpPath = QStandardPaths::findExecutable("yt-dlp");
-    ytdlpPath = QStandardPaths::findExecutable("yt-dlp", {"/opt/homebrew/bin"});
+    if (ytdlpPath.isEmpty()) {
+        ytdlpPath = QStandardPaths::findExecutable("yt-dlp", {"/opt/homebrew/bin"});
+    }
 
     if (ytdlpPath.isEmpty()) {
         QMessageBox::warning(this, "Warning", "yt-dlp not found!");
@@ -72,10 +89,13 @@ void MainGUI::on_downloadButton_clicked() {
     ui->urlErrorLabel->hide();
     ui->pathErrorLabel->hide();
 
+    // reset progress bar
+    ui->progressBar->setValue(0);
+
     QString url = ui->urlInput->text().trimmed();
     QString directoryPath = ui->pathPrint->text().trimmed();
-    bool flag = false;
 
+    bool flag = false;
     if (url.isEmpty())
     {
         flag = true;
@@ -114,7 +134,7 @@ void MainGUI::on_downloadButton_clicked() {
          << "-P" << directoryPath
          << url;
 
-    ui->status->setStyleSheet("QLabel { color : gold; }");
+    setLabelColor(ui->status, downloadColor);
     ui->status->setText("Starting download...");
 
     process->start(ytdlpPath, args);
@@ -131,10 +151,10 @@ void MainGUI::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
 
     // set status according to exit code
     if (exitStatus == QProcess::NormalExit && exitCode == 0) {
-        ui->status->setStyleSheet("QLabel { color : LawnGreen; }");
+        setLabelColor(ui->status, finishedColor);
         ui->status->setText("Download finished!");
     } else {
-        ui->status->setStyleSheet("QLabel { color : FireBrick; }");
+        setLabelColor(ui->status, errorColor);
         ui->status->setText("Error, download failed!");
     }
 }
@@ -158,4 +178,43 @@ void MainGUI::onProcessNewOutput() {
             updateProgressBar(capture);
         }
     }
+}
+
+// update label color
+void MainGUI::setLabelColor(QLabel* label, QColor color) {
+    QPalette palette = label->palette();
+    palette.setColor(QPalette::WindowText, color);
+    label->setPalette(palette);
+}
+
+void MainGUI::updateUIColors(bool isDark) {
+    if (isDark) {
+        errorColor = QColor(255, 100, 100);
+        downloadColor = QColor(255, 214, 102);
+        finishedColor = QColor(144, 238, 144);
+
+        if (ui->status->palette().color(QPalette::WindowText) == QColor(200, 0, 0)) {
+            setLabelColor(ui->status, errorColor);
+        } else if (ui->status->palette().color(QPalette::WindowText) == QColor(184, 134, 11)) {
+            setLabelColor(ui->status, downloadColor);
+        } else if (ui->status->palette().color(QPalette::WindowText) == QColor(34, 139, 34)) {
+            setLabelColor(ui->status, finishedColor);
+        }
+
+    } else {
+        errorColor = QColor(200, 0, 0);
+        downloadColor = QColor(184, 134, 11);
+        finishedColor =  QColor(34, 139, 34);
+
+        if (ui->status->palette().color(QPalette::WindowText) == QColor(255, 100, 100)) {
+            setLabelColor(ui->status, errorColor);
+        } else if (ui->status->palette().color(QPalette::WindowText) == QColor(255, 214, 102)) {
+            setLabelColor(ui->status, downloadColor);
+        } else if (ui->status->palette().color(QPalette::WindowText) == QColor(144, 238, 144)) {
+            setLabelColor(ui->status, finishedColor);
+        }
+    }
+
+    setLabelColor(ui->urlErrorLabel, errorColor);
+    setLabelColor(ui->pathErrorLabel, errorColor);
 }
