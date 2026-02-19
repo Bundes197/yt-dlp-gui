@@ -128,7 +128,10 @@ void MainGUI::on_downloadButton_clicked() {
 
     // arguments for download
     QStringList args;
-    args << "-x"
+    args << "-x" // only audio
+         << "--limit-rate" << "3M" // limit download speed to not get blocked by YouTube
+         << "--sleep-interval" << "3" // pause between videos when downloading playlist (minimum)
+         << "--max-sleep-interval" << "10"  // pause between videos when downloading playlist (maximum)
          << "--audio-format" << "mp3"
          << "--ffmpeg-location" << ffmpegPath
          << "-P" << directoryPath
