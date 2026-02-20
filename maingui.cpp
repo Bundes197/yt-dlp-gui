@@ -145,12 +145,20 @@ void MainGUI::on_downloadButton_clicked() {
     ui->status->setText("Downloading...");
 
     ui->downloadButton->setEnabled(false);
+    ui->downloadButton->setCursor(Qt::ArrowCursor);
     ui->downloadButton->setText("Downloading...");
+
+    ui->directoryButton->setEnabled(false);
+    ui->directoryButton->setCursor(Qt::ArrowCursor);
 }
 
 void MainGUI::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
     ui->downloadButton->setEnabled(true);
+    ui->downloadButton->setCursor(Qt::PointingHandCursor);
     ui->downloadButton->setText("Download");
+
+    ui->directoryButton->setEnabled(true);
+    ui->directoryButton->setCursor(Qt::PointingHandCursor);
 
     // set status according to exit code
     if (exitStatus == QProcess::NormalExit && exitCode == 0) {
