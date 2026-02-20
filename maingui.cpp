@@ -48,7 +48,7 @@ void MainGUI::detectBinaries() {
     // find needed binaries, disable download if not found
     ytdlpPath = QStandardPaths::findExecutable("yt-dlp");
     if (ytdlpPath.isEmpty()) {
-        ytdlpPath = QStandardPaths::findExecutable("yt-dlp", {"/opt/homebrew/bin"});
+        ytdlpPath = QStandardPaths::findExecutable("yt-dlp", {"/opt/homebrew/bin"}); // for homebrew downloads
     }
 
     if (ytdlpPath.isEmpty()) {
@@ -177,8 +177,8 @@ void MainGUI::onProcessNewOutput() {
         QRegularExpressionMatch match = regexp.match(newOutputLine);
 
         if (match.hasMatch()) {
-            int capture = match.captured(1).toDouble();
-            updateProgressBar(capture);
+            double capture = match.captured(1).toDouble();
+            updateProgressBar(static_cast<int>(capture));
         }
     }
 }
