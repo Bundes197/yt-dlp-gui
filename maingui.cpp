@@ -3,8 +3,6 @@
 #include <QFileDialog>
 #include <QDir>
 #include <QProcess>
-#include <QStandardPaths>
-#include <QMessageBox>
 #include <QProgressBar>
 #include <QRegularExpression>
 #include <QStyleFactory>
@@ -42,29 +40,6 @@ MainGUI::MainGUI(QWidget *parent)
     ui->progressBar->setStyle(QStyleFactory::create("Fusion"));
 
     detectBinaries();
-}
-
-void MainGUI::detectBinaries() {
-    // find needed binaries, disable download if not found
-    ytdlpPath = QStandardPaths::findExecutable("yt-dlp");
-    if (ytdlpPath.isEmpty()) {
-        ytdlpPath = QStandardPaths::findExecutable("yt-dlp", {"/opt/homebrew/bin"}); // for homebrew downloads
-    }
-
-    if (ytdlpPath.isEmpty()) {
-        QMessageBox::warning(this, "Warning", "yt-dlp not found!");
-        ui->downloadButton->setEnabled(false);
-        ui->status->setText("Disabled, binaries not found.");
-    }
-
-    ffmpegPath = QStandardPaths::findExecutable("ffmpeg");
-    ffmpegPath = QStandardPaths::findExecutable("ffmpeg", {"/opt/homebrew/bin"});
-
-    if (ffmpegPath.isEmpty()) {
-        QMessageBox::warning(this, "Warning", "ffmpeg not found!");
-        ui->downloadButton->setEnabled(false);
-        ui->status->setText("Disabled, binaries not found.");
-    }
 }
 
 MainGUI::~MainGUI() {
@@ -127,38 +102,35 @@ void MainGUI::on_downloadButton_clicked() {
     process->setWorkingDirectory(directoryPath);
 
     // arguments for download
-    QStringList args;
-    args << "-x" // only audio
-         << "--limit-rate" << "3M" // limit download speed to not get blocked by YouTube
-         << "--sleep-interval" << "3" // pause between videos when downloading playlist (minimum)
-         << "--max-sleep-interval" << "10"  // pause between videos when downloading playlist (maximum)
-         << "--audio-format" << "mp3"
-         << "--ffmpeg-location" << ffmpegPath
-         << "-P" << directoryPath
-         << url;
+    args.clear();
+    addArguments(url, directoryPath);
 
     setLabelColor(ui->status, downloadColor);
     ui->status->setText("Starting download...");
 
     process->start(ytdlpPath, args);
 
+    if (!process->waitForStarted(3000)) {
+        setLabelColor(ui->status, errorColor);
+
+        ui->status->setText("Failed to start download!");
+        ui->downloadButton->setEnabled(true);
+        ui->downloadButton->setCursor(Qt::PointingHandCursor);
+
+        ui->downloadButton->setText("Download");
+        ui->directoryButton->setEnabled(true);
+        ui->directoryButton->setCursor(Qt::PointingHandCursor);
+        return;
+    }
+
     ui->status->setText("Downloading...");
-
-    ui->downloadButton->setEnabled(false);
-    ui->downloadButton->setCursor(Qt::ArrowCursor);
+    setButtonsEnabled(false);
     ui->downloadButton->setText("Downloading...");
-
-    ui->directoryButton->setEnabled(false);
-    ui->directoryButton->setCursor(Qt::ArrowCursor);
 }
 
 void MainGUI::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
-    ui->downloadButton->setEnabled(true);
-    ui->downloadButton->setCursor(Qt::PointingHandCursor);
+    setButtonsEnabled(true);
     ui->downloadButton->setText("Download");
-
-    ui->directoryButton->setEnabled(true);
-    ui->directoryButton->setCursor(Qt::PointingHandCursor);
 
     // set status according to exit code
     if (exitStatus == QProcess::NormalExit && exitCode == 0) {
@@ -174,19 +146,18 @@ void MainGUI::updateProgressBar(int value) {
     ui->progressBar->setValue(value);
 }
 
+const QRegularExpression MainGUI::progressRegex(R"((\d+\.?\d*)%)");
+
 void MainGUI::onProcessNewOutput() {
     QString newOutputLine = process->readLine();
 
     // match download progress with regexp, update progress bar
     if (newOutputLine.contains("[download]")) {
-        QRegularExpression regexp;
-        regexp.setPattern(R"((\d+\.?\d*)%)");
-
-        QRegularExpressionMatch match = regexp.match(newOutputLine);
+        QRegularExpressionMatch match = progressRegex.match(newOutputLine);
 
         if (match.hasMatch()) {
-            double capture = match.captured(1).toDouble();
-            updateProgressBar(static_cast<int>(capture));
+            int value = match.captured(1).toInt();
+            ui->progressBar->setValue(value);
         }
     }
 }
@@ -228,4 +199,11 @@ void MainGUI::updateUIColors(bool isDark) {
 
     setLabelColor(ui->urlErrorLabel, errorColor);
     setLabelColor(ui->pathErrorLabel, errorColor);
+}
+
+void MainGUI::setButtonsEnabled(bool enabled) {
+    ui->downloadButton->setEnabled(enabled);
+    ui->downloadButton->setCursor(enabled ? Qt::PointingHandCursor : Qt::ArrowCursor);
+    ui->directoryButton->setEnabled(enabled);
+    ui->directoryButton->setCursor(enabled ? Qt::PointingHandCursor : Qt::ArrowCursor);
 }

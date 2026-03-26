@@ -26,6 +26,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(yt-dlp-gui
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        utils.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET yt-dlp-gui APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
