@@ -53,7 +53,7 @@
        </size>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="audioTab">
        <attribute name="title">
@@ -79,9 +79,9 @@
          <number>10</number>
         </property>
         <item row="1" column="3">
-         <widget class="QRadioButton" name="radioButton_4">
+         <widget class="QRadioButton" name="wavButton">
           <property name="text">
-           <string>RadioButton</string>
+           <string>WAV</string>
           </property>
          </widget>
         </item>
@@ -99,26 +99,26 @@
          </spacer>
         </item>
         <item row="1" column="1">
-         <widget class="QRadioButton" name="radioButton_3">
+         <widget class="QRadioButton" name="flacButton">
           <property name="layoutDirection">
            <enum>Qt::LayoutDirection::LeftToRight</enum>
           </property>
           <property name="text">
-           <string>RadioButton</string>
+           <string>FLAC</string>
           </property>
          </widget>
         </item>
         <item row="2" column="3">
-         <widget class="QRadioButton" name="radioButton_6">
+         <widget class="QRadioButton" name="vorbisButton">
           <property name="text">
-           <string>RadioButton</string>
+           <string>Vorbis</string>
           </property>
          </widget>
         </item>
         <item row="0" column="3">
-         <widget class="QRadioButton" name="radioButton_2">
+         <widget class="QRadioButton" name="m4aButton">
           <property name="text">
-           <string>RadioButton</string>
+           <string>M4A</string>
           </property>
          </widget>
         </item>
@@ -136,12 +136,12 @@
          </spacer>
         </item>
         <item row="0" column="1">
-         <widget class="QRadioButton" name="radioButton">
+         <widget class="QRadioButton" name="mp3Button">
           <property name="layoutDirection">
            <enum>Qt::LayoutDirection::LeftToRight</enum>
           </property>
           <property name="text">
-           <string>RadioButton</string>
+           <string>MP3</string>
           </property>
           <property name="checked">
            <bool>true</bool>
@@ -149,9 +149,9 @@
          </widget>
         </item>
         <item row="2" column="1">
-         <widget class="QRadioButton" name="radioButton_5">
+         <widget class="QRadioButton" name="opusButton">
           <property name="text">
-           <string>RadioButton</string>
+           <string>Opus</string>
           </property>
           <property name="checked">
            <bool>false</bool>
@@ -197,9 +197,9 @@
          <number>10</number>
         </property>
         <item row="1" column="1">
-         <widget class="QRadioButton" name="radioButton_9">
+         <widget class="QRadioButton" name="webmButton">
           <property name="text">
-           <string>RadioButton</string>
+           <string>WebM</string>
           </property>
          </widget>
         </item>
@@ -230,23 +230,23 @@
          </spacer>
         </item>
         <item row="2" column="1">
-         <widget class="QRadioButton" name="radioButton_11">
+         <widget class="QRadioButton" name="aviButton">
           <property name="text">
-           <string>RadioButton</string>
+           <string>AVI</string>
           </property>
          </widget>
         </item>
         <item row="2" column="3">
-         <widget class="QRadioButton" name="radioButton_12">
+         <widget class="QRadioButton" name="flvButton">
           <property name="text">
-           <string>RadioButton</string>
+           <string>FLV</string>
           </property>
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QRadioButton" name="radioButton_7">
+         <widget class="QRadioButton" name="mp4Button">
           <property name="text">
-           <string>RadioButton</string>
+           <string>MP4</string>
           </property>
           <property name="checked">
            <bool>true</bool>
@@ -254,16 +254,16 @@
          </widget>
         </item>
         <item row="0" column="3">
-         <widget class="QRadioButton" name="radioButton_8">
+         <widget class="QRadioButton" name="mkvButton">
           <property name="text">
-           <string>RadioButton</string>
+           <string>MKV</string>
           </property>
          </widget>
         </item>
         <item row="1" column="3">
-         <widget class="QRadioButton" name="radioButton_10">
+         <widget class="QRadioButton" name="movButton">
           <property name="text">
-           <string>RadioButton</string>
+           <string>MOV</string>
           </property>
          </widget>
         </item>
@@ -736,6 +736,12 @@
      <height>33</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuyt_dlp_gui">
+    <property name="title">
+     <string>yt-dlp-gui</string>
+    </property>
+   </widget>
+   <addaction name="menuyt_dlp_gui"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
