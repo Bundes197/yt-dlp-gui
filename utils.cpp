@@ -38,9 +38,18 @@ void MainGUI::addArguments(const QString & url, const QString & directoryPath) {
          << "--ffmpeg-location" << ffmpegPath
          << "-P" << directoryPath;
 
-    args // ----- AUDIO and VIDEO -----
-         << "-x" // only audio, for testing
-         << "--audio-format" << "mp3"; // for testing
+    // ----- AUDIO or VIDEO -----
+    if (ui->formatTabs->currentIndex() == 0) {
+        // AUDIO is selected
+        args << "-x" // only audio, for testing
+             << "--audio-format" << "mp3"; // for testing
+    } else {
+        // VIDEO is selected
+        args << "-S"
+             << "res,ext:mp4:m4a"
+             << "--recode"
+             << "mp4";
+    }
 
     args << url;
 }
