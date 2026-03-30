@@ -149,15 +149,18 @@ void MainGUI::updateProgressBar(int value) {
 const QRegularExpression MainGUI::progressRegex(R"((\d+\.?\d*)%)");
 
 void MainGUI::onProcessNewOutput() {
-    QString newOutputLine = process->readLine();
+    while (process->canReadLine()) {
+        QString line = process->readLine().trimmed();
 
-    // match download progress with regexp, update progress bar
-    if (newOutputLine.contains("[download]")) {
-        QRegularExpressionMatch match = progressRegex.match(newOutputLine);
+        // match download progress with regexp, update progress bar
+        if (line.contains("[download]")) {
+            QRegularExpressionMatch match = progressRegex.match(line);
 
-        if (match.hasMatch()) {
-            int value = match.captured(1).toInt();
-            ui->progressBar->setValue(value);
+            if (match.hasMatch()) {
+                double percentage = match.captured(1).toDouble();
+                int value = qRound(percentage);
+                ui->progressBar->setValue(value);
+            }
         }
     }
 }

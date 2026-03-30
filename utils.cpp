@@ -29,6 +29,9 @@ void MainGUI::detectBinaries() {
 }
 
 void MainGUI::addArguments(const QString & url, const QString & directoryPath) {
+    args // ----- GENERAL SETTINGS -----
+        << "--newline";
+
     args // ----- IP BLOCK AVOIDANCE -----
          << "--limit-rate" << RATE_LIMIT // limit download speed to not get blocked by YouTube
          << "--sleep-interval" << QString::number(SLEEP_MIN) // pause between videos when downloading playlist (minimum)
