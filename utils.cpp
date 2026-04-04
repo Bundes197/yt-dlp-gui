@@ -2,6 +2,7 @@
 #include "./ui_maingui.h"
 #include <QStandardPaths>
 #include <QMessageBox>
+#include <QButtonGroup>
 
 void MainGUI::detectBinaries() {
     // find needed binaries, disable download if not found
@@ -30,7 +31,9 @@ void MainGUI::detectBinaries() {
 
 void MainGUI::addArguments(const QString & url, const QString & directoryPath) {
     args // ----- GENERAL SETTINGS -----
-        << "--newline";
+        << "--newline"
+        // << "-—embed-thumbnail";
+        << "--add-metadata";
 
     args // ----- IP BLOCK AVOIDANCE -----
          << "--limit-rate" << RATE_LIMIT // limit download speed to not get blocked by YouTube
@@ -41,17 +44,67 @@ void MainGUI::addArguments(const QString & url, const QString & directoryPath) {
          << "--ffmpeg-location" << ffmpegPath
          << "-P" << directoryPath;
 
+    QButtonGroup group;
+    QList<QRadioButton *> allButtons = ui->formatTabs->findChildren<QRadioButton *>();
+
+    for(int i = 0; i < allButtons.size(); i++)
+    {
+        group.addButton(allButtons[i],i);
+    }
+
+    QString name = group.checkedButton()->objectName();
+
     // ----- AUDIO or VIDEO -----
     if (ui->formatTabs->currentIndex() == 0) {
         // AUDIO is selected
-        args << "-x" // only audio, for testing
-             << "--audio-format" << "mp3"; // for testing
+        args << "-x";
+
+        if (name == "mp3Button") {
+            args << "--audio-format" << "mp3";
+        } else if (name == "m4aButton") {
+            args << "--audio-format" << "m4a";
+        } else if (name == "flacButton") {
+            args << "--audio-format" << "flac";
+        } else if (name == "wavButton") {
+            args << "--audio-format" << "wav";
+        } else if (name == "opusButton") {
+            args << "--audio-format" << "opus";
+        } else if (name == "vorbisButton") {
+            args << "--audio-format" << "vorbis";
+        } else {
+            args << "--audio-format" << "mp3";
+        }
+
     } else {
         // VIDEO is selected
-        args << "-S"
-             << "res,ext:mp4:m4a"
-             << "--recode"
-             << "mp4";
+        if (name == "mp4Button") {
+            args << "-S"
+                 << "res,ext:mp4:m4a"
+                 << "--recode"
+                 << "mp4";
+
+        } else if (name == "mkvButton") {
+            args << "--merge-output-format"
+                 << "mkv";
+
+        } else if (name == "webmButton") {
+            args << "-S"
+                 << "res,ext:webm:opus"
+                 << "--recode"
+                 << "webm";
+
+        } else if (name == "movButton") {
+            args << "--remux-video" << "mov";
+
+        } else if (name == "aviButton") {
+            args << "--recode" << "avi";
+
+        } else if (name == "flvButton") {
+            args << "--recode" << "flv";
+
+        } else {
+            args << "--merge-output-format" << "mkv";
+        }
     }
 
     args << url;
