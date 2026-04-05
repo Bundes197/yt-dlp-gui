@@ -32,22 +32,24 @@ void MainGUI::detectBinaries() {
 QString MainGUI::getSelectedFormat() const {
     // Audio tab
     if (ui->formatTabs->currentIndex() == 0) {
-        if (ui->mp3Button->isChecked()) return "mp3";
-        if (ui->m4aButton->isChecked()) return "m4a";
-        if (ui->flacButton->isChecked()) return "flac";
-        if (ui->wavButton->isChecked()) return "wav";
-        if (ui->opusButton->isChecked()) return "opus";
-        if (ui->vorbisButton->isChecked()) return "vorbis";
+        if (ui->bestButton->isChecked()) return "best";
+        else if (ui->m4aButton->isChecked()) return "m4a";
+        else if (ui->opusButton->isChecked()) return "opus";
+        else if (ui->mp3Button->isChecked()) return "mp3";
+        else if (ui->flacButton->isChecked()) return "flac";
+        else if (ui->wavButton->isChecked()) return "wav";
+
         return "mp3";  // Default
     }
     // Video tab
     else {
         if (ui->mp4Button->isChecked()) return "mp4";
-        if (ui->mkvButton->isChecked()) return "mkv";
-        if (ui->webmButton->isChecked()) return "webm";
-        if (ui->movButton->isChecked()) return "mov";
-        if (ui->aviButton->isChecked()) return "avi";
-        if (ui->flvButton->isChecked()) return "flv";
+        else if (ui->mkvButton->isChecked()) return "mkv";
+        else if (ui->webmButton->isChecked()) return "webm";
+        else if (ui->movButton->isChecked()) return "mov";
+        else if (ui->aviButton->isChecked()) return "avi";
+        else if (ui->flvButton->isChecked()) return "flv";
+
         return "mkv";  // Default
     }
 }

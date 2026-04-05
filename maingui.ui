@@ -78,10 +78,23 @@
         <property name="verticalSpacing">
          <number>10</number>
         </property>
-        <item row="1" column="3">
-         <widget class="QRadioButton" name="wavButton">
+        <item row="1" column="4">
+         <spacer name="horizontalSpacer_14">
+          <property name="orientation">
+           <enum>Qt::Orientation::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="0" column="3">
+         <widget class="QRadioButton" name="m4aButton">
           <property name="text">
-           <string>WAV</string>
+           <string>M4A</string>
           </property>
          </widget>
         </item>
@@ -98,66 +111,6 @@
           </property>
          </spacer>
         </item>
-        <item row="1" column="1">
-         <widget class="QRadioButton" name="flacButton">
-          <property name="layoutDirection">
-           <enum>Qt::LayoutDirection::LeftToRight</enum>
-          </property>
-          <property name="text">
-           <string>FLAC</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="3">
-         <widget class="QRadioButton" name="vorbisButton">
-          <property name="text">
-           <string>Vorbis</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="3">
-         <widget class="QRadioButton" name="m4aButton">
-          <property name="text">
-           <string>M4A</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="4">
-         <spacer name="horizontalSpacer_14">
-          <property name="orientation">
-           <enum>Qt::Orientation::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="0" column="1">
-         <widget class="QRadioButton" name="mp3Button">
-          <property name="layoutDirection">
-           <enum>Qt::LayoutDirection::LeftToRight</enum>
-          </property>
-          <property name="text">
-           <string>MP3</string>
-          </property>
-          <property name="checked">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QRadioButton" name="opusButton">
-          <property name="text">
-           <string>Opus</string>
-          </property>
-          <property name="checked">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
         <item row="1" column="2">
          <spacer name="horizontalSpacer_15">
           <property name="orientation">
@@ -170,6 +123,56 @@
            </size>
           </property>
          </spacer>
+        </item>
+        <item row="0" column="1">
+         <widget class="QRadioButton" name="bestButton">
+          <property name="text">
+           <string>Best possible</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QRadioButton" name="opusButton">
+          <property name="text">
+           <string>Opus</string>
+          </property>
+          <property name="checked">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="3">
+         <widget class="QRadioButton" name="mp3Button">
+          <property name="layoutDirection">
+           <enum>Qt::LayoutDirection::LeftToRight</enum>
+          </property>
+          <property name="text">
+           <string>MP3</string>
+          </property>
+          <property name="checked">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="3">
+         <widget class="QRadioButton" name="wavButton">
+          <property name="text">
+           <string>WAV</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QRadioButton" name="flacButton">
+          <property name="layoutDirection">
+           <enum>Qt::LayoutDirection::LeftToRight</enum>
+          </property>
+          <property name="text">
+           <string>FLAC</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
