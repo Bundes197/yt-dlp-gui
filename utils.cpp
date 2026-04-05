@@ -68,6 +68,7 @@ void MainGUI::addArguments(const QString & url, const QString & directoryPath) {
         << "--ffmpeg-location" << ffmpegPath
         << "-P" << directoryPath;
 
+    // AUDIO and VIDEO
     QString format = getSelectedFormat();
 
     if (ui->formatTabs->currentIndex() == 0) {
@@ -83,6 +84,18 @@ void MainGUI::addArguments(const QString & url, const QString & directoryPath) {
             // MOV, AVI, FLV - recode needed
             args << "--recode-video" << format;
         }
+    }
+
+    if (ui->quantityTabs->currentIndex() == 0) {
+        // SINGLE download is selected
+    } else {
+        // PLAYLIST download is selected
+        if (ui->ignoreErrCheckBox->isChecked()) {
+            // ignore error if one video from playlist cannot be downloaded
+            args << "-i";
+        }
+
+        args << "--yes-playlist";
     }
 
     args << url;
