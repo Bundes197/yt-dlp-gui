@@ -49,6 +49,8 @@ private:
 
     void detectBinaries();
 
+    QString getSelectedFormat() const;
+
     void addArguments(const QString & url, const QString & directoryPath);
 
     void setLabelColor(QLabel * label, QColor color);

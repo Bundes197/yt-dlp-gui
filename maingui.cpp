@@ -10,6 +10,7 @@
 #include <QPalette>
 #include <QGuiApplication>
 #include <QStyleHints>
+#include <QMessageBox>
 
 MainGUI::MainGUI(QWidget *parent)
     : QMainWindow(parent)
@@ -139,6 +140,15 @@ void MainGUI::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
     } else {
         setLabelColor(ui->status, errorColor);
         ui->status->setText("Error, download failed!");
+
+        QString errorOutput = process->readAllStandardError();
+        if (errorOutput.isEmpty()) {
+            errorOutput = "Unknown error (exit code: " + QString::number(exitCode) + ")";
+        }
+
+        QMessageBox::critical(this, "Download Failed",
+                              "The download process failed.\n\n"
+                              "Error details:\n" + errorOutput);
     }
 }
 
