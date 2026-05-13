@@ -90,6 +90,11 @@ void MainGUI::addArguments(const QString & url, const QString & directoryPath) {
 
     if (ui->quantityTabs->currentIndex() == 0) {
         // SINGLE download is selected
+        QString fileName = ui->fileNameInput->text().trimmed();
+
+        if (!fileName.isEmpty()) {
+            args << "-o" << fileName;
+        }
     } else {
         // PLAYLIST download is selected
         if (ui->ignoreErrCheckBox->isChecked()) {
