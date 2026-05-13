@@ -2,7 +2,9 @@
 #include "./ui_maingui.h"
 #include <QStandardPaths>
 #include <QMessageBox>
-#include <QButtonGroup>
+#include <QRegularExpression>
+#include <QUrl>
+#include <QDir>
 
 void MainGUI::detectBinaries() {
     // find needed binaries, disable download if not found
@@ -59,7 +61,6 @@ void MainGUI::addArguments(const QString & url, const QString & directoryPath) {
         << "--newline"
         << "--add-metadata"
         << "--embed-thumbnail";
-        // << "--embed-subs";
 
     args // ----- IP BLOCK AVOIDANCE -----
         << "--limit-rate" << RATE_LIMIT
@@ -88,12 +89,16 @@ void MainGUI::addArguments(const QString & url, const QString & directoryPath) {
         }
     }
 
+    // SINGLE FILE AND PLAYLIST
     if (ui->quantityTabs->currentIndex() == 0) {
         // SINGLE download is selected
         QString fileName = ui->fileNameInput->text().trimmed();
 
-        if (!fileName.isEmpty()) {
-            args << "-o" << fileName;
+        // disable path traversal and regex, protection against file rewrite
+        QString cleanFileName = sanitizeFilename(fileName);
+
+        if (!cleanFileName.isEmpty()) {
+            args << "-o" << cleanFileName;
         }
     } else {
         // PLAYLIST download is selected
@@ -107,3 +112,38 @@ void MainGUI::addArguments(const QString & url, const QString & directoryPath) {
 
     args << url;
 }
+
+QString MainGUI::sanitizeFilename(const QString & filename) {
+    QString clean = filename.trimmed();
+
+    clean.remove(QRegularExpression("[/\\\\]"));
+    clean.remove("..");
+
+    clean.remove(QRegularExpression("[<>:\"|?*]"));
+
+    if (clean.length() > 255) {
+        clean = clean.left(255);
+    }
+
+    return clean;
+}
+
+bool MainGUI::isValidUrl(const QString & url) {
+    QUrl urlObj(url);
+
+    if (!urlObj.isValid() || urlObj.scheme().isEmpty()) {
+        return false;
+    }
+
+    QStringList allowedSchemes = {"http", "https"};
+    return allowedSchemes.contains(urlObj.scheme().toLower());
+}
+
+bool MainGUI::isValidDirectory(const QString & path) {
+    QDir dir(path);
+    if (!dir.exists()) return false;
+
+    QFileInfo dirInfo(path);
+    return dirInfo.isWritable();
+}
+

@@ -11,6 +11,7 @@
 #include <QGuiApplication>
 #include <QStyleHints>
 #include <QMessageBox>
+#include <QUrl>
 
 MainGUI::MainGUI(QWidget *parent)
     : QMainWindow(parent)
@@ -19,13 +20,11 @@ MainGUI::MainGUI(QWidget *parent)
 
     ui->setupUi(this);
 
-    // set error labels invisible by default
-    ui->urlErrorLabel->hide();
-
-    auto sp = ui->pathErrorLabel->sizePolicy();
+    // set error label invisible by default and remain size
+    auto sp = ui->errorLabel->sizePolicy();
     sp.setRetainSizeWhenHidden(true);
-    ui->pathErrorLabel->setSizePolicy(sp);
-    ui->pathErrorLabel->hide();
+    ui->errorLabel->setSizePolicy(sp);
+    ui->errorLabel->hide();
 
 
     // connect color mode change in OS
@@ -61,33 +60,39 @@ void MainGUI::on_directoryButton_clicked() {
 }
 
 void MainGUI::on_downloadButton_clicked() {
-    // reset labels
-    ui->urlErrorLabel->hide();
-    ui->pathErrorLabel->hide();
+    // reset label
+    ui->errorLabel->hide();
 
     // reset progress bar
     ui->progressBar->setValue(0);
 
     QString url = ui->urlInput->text().trimmed();
+    if (url.isEmpty()) {
+        ui->errorLabel->setText("URL is missing!");
+        ui->errorLabel->show();
+        return;
+    }
+
+    if (!isValidUrl(url)) {
+        ui->errorLabel->setText("Invalid URL!");
+        ui->errorLabel->show();
+        return;
+    }
+
     QString directoryPath = ui->pathPrint->text().trimmed();
-
-    bool flag = false;
-    if (url.isEmpty())
-    {
-        flag = true;
-        ui->urlErrorLabel->show();
+    if (directoryPath.isEmpty()) {
+        ui->errorLabel->setText("Directory path is missing!");
+        ui->errorLabel->show();
+        return;
     }
 
-    if (directoryPath.isEmpty())
-    {
-        flag = true;
-        ui->pathErrorLabel->show();
+    if (!isValidDirectory(directoryPath)) {
+        ui->errorLabel->setText("Cannot write into selected directory!");
+        ui->errorLabel->show();
+        return;
     }
 
-    if (flag) return;
-
-    ui->urlErrorLabel->hide();
-    ui->pathErrorLabel->hide();
+    ui->errorLabel->hide();
 
     if (process) {
         process->kill();
@@ -152,10 +157,6 @@ void MainGUI::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
     }
 }
 
-void MainGUI::updateProgressBar(int value) {
-    ui->progressBar->setValue(value);
-}
-
 const QRegularExpression MainGUI::progressRegex(R"((\d+\.?\d*)%)");
 
 void MainGUI::onProcessNewOutput() {
@@ -210,8 +211,7 @@ void MainGUI::updateUIColors(bool isDark) {
         }
     }
 
-    setLabelColor(ui->urlErrorLabel, errorColor);
-    setLabelColor(ui->pathErrorLabel, errorColor);
+    setLabelColor(ui->errorLabel, errorColor);
 }
 
 void MainGUI::setButtonsEnabled(bool enabled) {
