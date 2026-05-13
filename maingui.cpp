@@ -3,8 +3,6 @@
 #include <QFileDialog>
 #include <QDir>
 #include <QProcess>
-#include <QStandardPaths>
-#include <QMessageBox>
 #include <QProgressBar>
 #include <QRegularExpression>
 #include <QStyleFactory>
@@ -12,6 +10,8 @@
 #include <QPalette>
 #include <QGuiApplication>
 #include <QStyleHints>
+#include <QMessageBox>
+#include <QUrl>
 
 MainGUI::MainGUI(QWidget *parent)
     : QMainWindow(parent)
@@ -20,13 +20,11 @@ MainGUI::MainGUI(QWidget *parent)
 
     ui->setupUi(this);
 
-    // set error labels invisible by default
-    ui->urlErrorLabel->hide();
-
-    auto sp = ui->pathErrorLabel->sizePolicy();
+    // set error label invisible by default and remain size
+    auto sp = ui->errorLabel->sizePolicy();
     sp.setRetainSizeWhenHidden(true);
-    ui->pathErrorLabel->setSizePolicy(sp);
-    ui->pathErrorLabel->hide();
+    ui->errorLabel->setSizePolicy(sp);
+    ui->errorLabel->hide();
 
 
     // connect color mode change in OS
@@ -42,29 +40,6 @@ MainGUI::MainGUI(QWidget *parent)
     ui->progressBar->setStyle(QStyleFactory::create("Fusion"));
 
     detectBinaries();
-}
-
-void MainGUI::detectBinaries() {
-    // find needed binaries, disable download if not found
-    ytdlpPath = QStandardPaths::findExecutable("yt-dlp");
-    if (ytdlpPath.isEmpty()) {
-        ytdlpPath = QStandardPaths::findExecutable("yt-dlp", {"/opt/homebrew/bin"});
-    }
-
-    if (ytdlpPath.isEmpty()) {
-        QMessageBox::warning(this, "Warning", "yt-dlp not found!");
-        ui->downloadButton->setEnabled(false);
-        ui->status->setText("Disabled, binaries not found.");
-    }
-
-    ffmpegPath = QStandardPaths::findExecutable("ffmpeg");
-    ffmpegPath = QStandardPaths::findExecutable("ffmpeg", {"/opt/homebrew/bin"});
-
-    if (ffmpegPath.isEmpty()) {
-        QMessageBox::warning(this, "Warning", "ffmpeg not found!");
-        ui->downloadButton->setEnabled(false);
-        ui->status->setText("Disabled, binaries not found.");
-    }
 }
 
 MainGUI::~MainGUI() {
@@ -85,33 +60,39 @@ void MainGUI::on_directoryButton_clicked() {
 }
 
 void MainGUI::on_downloadButton_clicked() {
-    // reset labels
-    ui->urlErrorLabel->hide();
-    ui->pathErrorLabel->hide();
+    // reset label
+    ui->errorLabel->hide();
 
     // reset progress bar
     ui->progressBar->setValue(0);
 
     QString url = ui->urlInput->text().trimmed();
+    if (url.isEmpty()) {
+        ui->errorLabel->setText("URL is missing!");
+        ui->errorLabel->show();
+        return;
+    }
+
+    if (!isValidUrl(url)) {
+        ui->errorLabel->setText("Invalid URL!");
+        ui->errorLabel->show();
+        return;
+    }
+
     QString directoryPath = ui->pathPrint->text().trimmed();
-
-    bool flag = false;
-    if (url.isEmpty())
-    {
-        flag = true;
-        ui->urlErrorLabel->show();
+    if (directoryPath.isEmpty()) {
+        ui->errorLabel->setText("Directory path is missing!");
+        ui->errorLabel->show();
+        return;
     }
 
-    if (directoryPath.isEmpty())
-    {
-        flag = true;
-        ui->pathErrorLabel->show();
+    if (!isValidDirectory(directoryPath)) {
+        ui->errorLabel->setText("Cannot write into selected directory!");
+        ui->errorLabel->show();
+        return;
     }
 
-    if (flag) return;
-
-    ui->urlErrorLabel->hide();
-    ui->pathErrorLabel->hide();
+    ui->errorLabel->hide();
 
     if (process) {
         process->kill();
@@ -127,26 +108,34 @@ void MainGUI::on_downloadButton_clicked() {
     process->setWorkingDirectory(directoryPath);
 
     // arguments for download
-    QStringList args;
-    args << "-x"
-         << "--audio-format" << "mp3"
-         << "--ffmpeg-location" << ffmpegPath
-         << "-P" << directoryPath
-         << url;
+    args.clear();
+    addArguments(url, directoryPath);
 
     setLabelColor(ui->status, downloadColor);
     ui->status->setText("Starting download...");
 
     process->start(ytdlpPath, args);
 
-    ui->status->setText("Downloading...");
+    if (!process->waitForStarted(3000)) {
+        setLabelColor(ui->status, errorColor);
 
-    ui->downloadButton->setEnabled(false);
+        ui->status->setText("Failed to start download!");
+        ui->downloadButton->setEnabled(true);
+        ui->downloadButton->setCursor(Qt::PointingHandCursor);
+
+        ui->downloadButton->setText("Download");
+        ui->directoryButton->setEnabled(true);
+        ui->directoryButton->setCursor(Qt::PointingHandCursor);
+        return;
+    }
+
+    ui->status->setText("Downloading...");
+    setButtonsEnabled(false);
     ui->downloadButton->setText("Downloading...");
 }
 
 void MainGUI::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
-    ui->downloadButton->setEnabled(true);
+    setButtonsEnabled(true);
     ui->downloadButton->setText("Download");
 
     // set status according to exit code
@@ -156,26 +145,33 @@ void MainGUI::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
     } else {
         setLabelColor(ui->status, errorColor);
         ui->status->setText("Error, download failed!");
+
+        QString errorOutput = process->readAllStandardError();
+        if (errorOutput.isEmpty()) {
+            errorOutput = "Unknown error (exit code: " + QString::number(exitCode) + ")";
+        }
+
+        QMessageBox::critical(this, "Download Failed",
+                              "The download process failed.\n\n"
+                              "Error details:\n" + errorOutput);
     }
 }
 
-void MainGUI::updateProgressBar(int value) {
-    ui->progressBar->setValue(value);
-}
+const QRegularExpression MainGUI::progressRegex(R"((\d+\.?\d*)%)");
 
 void MainGUI::onProcessNewOutput() {
-    QString newOutputLine = process->readLine();
+    while (process->canReadLine()) {
+        QString line = process->readLine().trimmed();
 
-    // match download progress with regexp, update progress bar
-    if (newOutputLine.contains("[download]")) {
-        QRegularExpression regexp;
-        regexp.setPattern(R"((\d+\.?\d*)%)");
+        // match download progress with regexp, update progress bar
+        if (line.contains("[download]")) {
+            QRegularExpressionMatch match = progressRegex.match(line);
 
-        QRegularExpressionMatch match = regexp.match(newOutputLine);
-
-        if (match.hasMatch()) {
-            int capture = match.captured(1).toDouble();
-            updateProgressBar(capture);
+            if (match.hasMatch()) {
+                double percentage = match.captured(1).toDouble();
+                int value = qRound(percentage);
+                ui->progressBar->setValue(value);
+            }
         }
     }
 }
@@ -215,6 +211,12 @@ void MainGUI::updateUIColors(bool isDark) {
         }
     }
 
-    setLabelColor(ui->urlErrorLabel, errorColor);
-    setLabelColor(ui->pathErrorLabel, errorColor);
+    setLabelColor(ui->errorLabel, errorColor);
+}
+
+void MainGUI::setButtonsEnabled(bool enabled) {
+    ui->downloadButton->setEnabled(enabled);
+    ui->downloadButton->setCursor(enabled ? Qt::PointingHandCursor : Qt::ArrowCursor);
+    ui->directoryButton->setEnabled(enabled);
+    ui->directoryButton->setCursor(enabled ? Qt::PointingHandCursor : Qt::ArrowCursor);
 }
