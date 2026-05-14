@@ -12,6 +12,7 @@
 #include <QStyleHints>
 #include <QMessageBox>
 #include <QUrl>
+#include <QFile>
 
 MainGUI::MainGUI(QWidget *parent)
     : QMainWindow(parent)
@@ -60,6 +61,13 @@ void MainGUI::on_directoryButton_clicked() {
 }
 
 void MainGUI::on_downloadButton_clicked() {
+    if (!QFile::exists(ytdlpPath) || !QFile::exists(ffmpegPath)) {
+        QMessageBox::warning(this, "Warning", "Binaries disappeared! Checking again...");
+
+        detectBinaries();
+        return;
+    }
+
     // reset label
     ui->errorLabel->hide();
 
