@@ -48,7 +48,15 @@ Go to the **Releases** page of this repository.
 Download the package for your operating system:
 * Windows: Download the `.zip` file, extract it and run `yt-dlp-gui.exe`.
 * macOS: Download the `.dmg` file, open it and drag the app to your Applications folder.
-* Linux: Download the `.zip` file, extract it and run the executable.
+    * **Important note!:** Because this is an unsigned open-source application, macOS Gatekeeper might show an error saying "yt-dlp-gui.app is damaged and can't be opened." To fix this, move the app to your Applications folder from the `.dmg` file, open Terminal, and run the following command to clear the quarantine flag:
+    ```bash
+    xattr -cr /Applications/yt-dlp-gui.app
+    ```
+* Linux: Download the `.AppImage` file, make it executable, and run it:
+```
+chmod +x yt-dlp-gui-Linux-x64.AppImage
+./yt-dlp-gui-Linux-x64.AppImage
+```
 
 ## Building from source
 If you want to build the project from source, you will need **CMake** and **Qt 6**.
