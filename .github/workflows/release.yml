@@ -34,7 +34,7 @@ jobs:
       - name: Install Qt 6
         uses: jurplel/install-qt-action@v4
         with:
-          version: '6.5.3'
+          version: '6.8.*'
 
       - name: Install Linux dependencies
         if: runner.os == 'Linux'
@@ -76,7 +76,15 @@ jobs:
           echo 'Icon=yt-dlp-gui' >> yt-dlp-gui.desktop
           echo 'Type=Application' >> yt-dlp-gui.desktop
           echo 'Categories=Utility;' >> yt-dlp-gui.desktop
-          touch yt-dlp-gui.png # Prázdná dummy ikona, aby byl linuxdeploy spokojený
+
+          cat > yt-dlp-gui.svg << 'EOF'
+          <svg width="256" height="256" xmlns="http://www.w3.org/2000/svg">
+            <rect width="256" height="256" fill="#2c3e50"/>
+            <text x="128" y="140" font-size="80" fill="white" text-anchor="middle" font-family="Arial">YT</text>
+          </svg>
+          EOF
+
+          --icon-file yt-dlp-gui.svg \
           
           export QMAKE=qmake
           ./linuxdeploy-x86_64.AppImage --appimage-extract-and-run \
