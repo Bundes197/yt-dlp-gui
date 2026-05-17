@@ -80,6 +80,7 @@ jobs:
           
           export QMAKE=qmake
           ./linuxdeploy-x86_64.AppImage --appimage-extract-and-run \
+            --appdir AppDir \
             --executable build/yt-dlp-gui \
             --desktop-file yt-dlp-gui.desktop \
             --icon-file yt-dlp-gui.png \
