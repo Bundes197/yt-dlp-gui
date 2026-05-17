@@ -7,27 +7,59 @@
 #include <QDir>
 
 void MainGUI::detectBinaries() {
+    bool ytdlpFound = false;
+    bool ffmpegFound = false;
+
     // find needed binaries, disable download if not found
     ytdlpPath = QStandardPaths::findExecutable("yt-dlp");
-    if (ytdlpPath.isEmpty()) {
-        ytdlpPath = QStandardPaths::findExecutable("yt-dlp", {"/opt/homebrew/bin"}); // for homebrew downloads
+    if (ytdlpPath.isEmpty()) {        
+        QStringList extraPaths;
+
+#if defined(Q_OS_MACOS)
+        extraPaths << "/opt/homebrew/bin";   // for homebrew downloads (Apple Silicon)
+        extraPaths << "/usr/local/bin";      // for homebrew downloads (Intel) and MacPorts
+#endif
+
+        if (!extraPaths.isEmpty()) {
+            ytdlpPath = QStandardPaths::findExecutable("yt-dlp", extraPaths);
+        }
     }
 
-    if (ytdlpPath.isEmpty()) {
-        QMessageBox::warning(this, "Warning", "yt-dlp not found!");
-        ui->downloadButton->setEnabled(false);
-        ui->status->setText("Disabled, binaries not found.");
+    if (!ytdlpPath.isEmpty()) {
+        ytdlpFound = true;
     }
 
     ffmpegPath = QStandardPaths::findExecutable("ffmpeg");
-    if (ffmpegPath.isEmpty()) {
-        ffmpegPath = QStandardPaths::findExecutable("ffmpeg", {"/opt/homebrew/bin"}); // for homebrew downloads
+    if (ffmpegPath.isEmpty()) {        
+        QStringList extraPaths;
+
+#if defined(Q_OS_MACOS)
+        extraPaths << "/opt/homebrew/bin";   // for homebrew downloads (Apple Silicon)
+        extraPaths << "/usr/local/bin";      // for homebrew downloads (Intel) and MacPorts
+#endif
+
+        if (!extraPaths.isEmpty()) {
+            ffmpegPath = QStandardPaths::findExecutable("ffmpeg", extraPaths);
+        }
     }
 
-    if (ffmpegPath.isEmpty()) {
-        QMessageBox::warning(this, "Warning", "ffmpeg not found!");
+    if (!ffmpegPath.isEmpty()) {
+        ffmpegFound = true;
+    }
+
+    if (!ffmpegFound || !ytdlpFound) {
+        if (!ffmpegFound && !ytdlpFound) {
+            QMessageBox::warning(this, "Warning", "yt-dlp and ffmpeg not found!");
+        } else if (!ytdlpFound) {
+            QMessageBox::warning(this, "Warning", "yt-dlp not found!");
+        } else {
+            QMessageBox::warning(this, "Warning", "ffmpeg not found!");
+        }
+
         ui->downloadButton->setEnabled(false);
-        ui->status->setText("Disabled, binaries not found.");
+        ui->status->setText("Disabled, binaries not found. If installed, restart the app.");
+    } else {
+        ui->downloadButton->setEnabled(true);
     }
 }
 
