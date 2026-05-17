@@ -1,0 +1,120 @@
+name: Build and release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Verify branch is main
+        shell: bash
+        run: |
+          if ! git branch -r --contains ${{ github.sha }} | grep -q "origin/main"; then
+            echo "[ERROR] This tag wasn't created on branch 'main'! Cancelling build."
+            exit 1
+          fi
+          echo "[OK] Tag is on branch 'main'. Continue build."
+
+      - name: Install Qt 6
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.5.3'
+
+      - name: Install Linux dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgl1-mesa-dev libfuse2
+
+      - name: Build and pack for windows
+        if: runner.os == 'Windows'
+        run: |
+          cmake -B build -S .
+          cmake --build build --config Release
+          cd build\Release
+          windeployqt yt-dlp-gui.exe
+          Compress-Archive -Path * -DestinationPath ..\..\yt-dlp-gui-Windows-x64.zip
+
+      - name: Build and pack for macos
+        if: runner.os == 'macOS'
+        run: |
+          cmake -B build -S .
+          cmake --build build --config Release
+          cd build
+          macdeployqt yt-dlp-gui.app -dmg
+          mv yt-dlp-gui.dmg ../yt-dlp-gui-macOS.dmg
+
+      - name: Build and pack for Linux
+        if: runner.os == 'Linux'
+        run: |
+          cmake -B build -S .
+          cmake --build build --config Release
+          
+          wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+          wget https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
+          chmod +x linuxdeploy*.AppImage
+          
+          echo '[Desktop Entry]' > yt-dlp-gui.desktop
+          echo 'Name=yt-dlp-gui' >> yt-dlp-gui.desktop
+          echo 'Exec=yt-dlp-gui' >> yt-dlp-gui.desktop
+          echo 'Icon=yt-dlp-gui' >> yt-dlp-gui.desktop
+          echo 'Type=Application' >> yt-dlp-gui.desktop
+          echo 'Categories=Utility;' >> yt-dlp-gui.desktop
+          touch yt-dlp-gui.png # Prázdná dummy ikona, aby byl linuxdeploy spokojený
+          
+          export QMAKE=qmake
+          ./linuxdeploy-x86_64.AppImage --appimage-extract-and-run \
+            --executable build/yt-dlp-gui \
+            --desktop-file yt-dlp-gui.desktop \
+            --icon-file yt-dlp-gui.png \
+            --plugin qt \
+            --output appimage
+            
+          mv yt-dlp-gui*.AppImage yt-dlp-gui-Linux-x64.AppImage
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: assets-${{ matrix.os }}
+          path: |
+            yt-dlp-gui-Windows-x64.zip
+            yt-dlp-gui-macOS.dmg
+            yt-dlp-gui-Linux-x64.AppImage
+          if-no-files-found: ignore
+
+  release:
+    name: Create GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: assets-*
+          merge-multiple: true
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            yt-dlp-gui-Windows-x64.zip
+            yt-dlp-gui-macOS.dmg
+            yt-dlp-gui-Linux-x64.AppImage
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
