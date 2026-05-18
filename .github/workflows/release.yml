@@ -34,7 +34,7 @@ jobs:
       - name: Install Qt 6
         uses: jurplel/install-qt-action@v4
         with:
-          version: '6.8.*'
+          version: '6.9.*'
 
       - name: Install Linux dependencies
         if: runner.os == 'Linux'
