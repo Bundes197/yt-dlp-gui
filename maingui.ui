@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>655</width>
-    <height>681</height>
+    <width>616</width>
+    <height>659</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,6 +20,9 @@
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_8">
+      <property name="spacing">
+       <number>0</number>
+      </property>
       <item>
        <spacer name="horizontalSpacer_19">
         <property name="orientation">
@@ -35,6 +38,22 @@
       </item>
       <item>
        <widget class="QPushButton" name="enButton">
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+    background: transparent;
+    border: none;
+    color: #FFFFFF;
+    text-decoration: underline;
+    font-weight: bold;
+    padding: 5px;
+}
+QPushButton:hover {
+    color: #AAAAAA;
+}</string>
+        </property>
         <property name="text">
          <string>EN</string>
         </property>
@@ -42,6 +61,22 @@
       </item>
       <item>
        <widget class="QPushButton" name="czButton">
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+    background: transparent;
+    border: none;
+    color: #FFFFFF;
+    text-decoration: underline;
+    font-weight: bold;
+    padding: 5px;
+}
+QPushButton:hover {
+    color: #AAAAAA;
+}</string>
+        </property>
         <property name="text">
          <string>CZ</string>
         </property>
@@ -814,7 +849,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>655</width>
+     <width>616</width>
      <height>33</height>
     </rect>
    </property>
