@@ -53,7 +53,7 @@ MainGUI::~MainGUI() {
 }
 
 void MainGUI::on_directoryButton_clicked() {
-    QString directoryPath = QFileDialog::getExistingDirectory(this, "Select destination directory", QDir::homePath());
+    QString directoryPath = QFileDialog::getExistingDirectory(this, tr("Select destination directory"), QDir::homePath());
     if (!directoryPath.isEmpty())
     {
         ui->pathPrint->setText(directoryPath);
@@ -62,7 +62,7 @@ void MainGUI::on_directoryButton_clicked() {
 
 void MainGUI::on_downloadButton_clicked() {
     if (!QFile::exists(ytdlpPath) || !QFile::exists(ffmpegPath)) {
-        QMessageBox::warning(this, "Warning", "Binaries disappeared! Checking again...");
+        QMessageBox::warning(this, tr("Warning"), tr("Binaries disappeared! Checking again..."));
 
         detectBinaries();
         return;
@@ -76,26 +76,26 @@ void MainGUI::on_downloadButton_clicked() {
 
     QString url = ui->urlInput->text().trimmed();
     if (url.isEmpty()) {
-        ui->errorLabel->setText("URL is missing!");
+        ui->errorLabel->setText(tr("URL is missing!"));
         ui->errorLabel->show();
         return;
     }
 
     if (!isValidUrl(url)) {
-        ui->errorLabel->setText("Invalid URL!");
+        ui->errorLabel->setText(tr("Invalid URL!"));
         ui->errorLabel->show();
         return;
     }
 
     QString directoryPath = ui->pathPrint->text().trimmed();
     if (directoryPath.isEmpty()) {
-        ui->errorLabel->setText("Directory path is missing!");
+        ui->errorLabel->setText(tr("Directory path is missing!"));
         ui->errorLabel->show();
         return;
     }
 
     if (!isValidDirectory(directoryPath)) {
-        ui->errorLabel->setText("Cannot write into selected directory!");
+        ui->errorLabel->setText(tr("Cannot write into selected directory!"));
         ui->errorLabel->show();
         return;
     }
@@ -120,48 +120,47 @@ void MainGUI::on_downloadButton_clicked() {
     addArguments(url, directoryPath);
 
     setLabelColor(ui->status, downloadColor);
-    ui->status->setText("Starting download...");
+    ui->status->setText(tr("Starting download..."));
 
     process->start(ytdlpPath, args);
 
     if (!process->waitForStarted(3000)) {
         setLabelColor(ui->status, errorColor);
 
-        ui->status->setText("Failed to start download!");
+        ui->status->setText(tr("Failed to start download!"));
         ui->downloadButton->setEnabled(true);
         ui->downloadButton->setCursor(Qt::PointingHandCursor);
 
-        ui->downloadButton->setText("Download");
+        ui->downloadButton->setText(tr("Download"));
         ui->directoryButton->setEnabled(true);
         ui->directoryButton->setCursor(Qt::PointingHandCursor);
         return;
     }
 
-    ui->status->setText("Downloading...");
+    ui->status->setText(tr("Downloading..."));
     setButtonsEnabled(false);
-    ui->downloadButton->setText("Downloading...");
+    ui->downloadButton->setText(tr("Downloading..."));
 }
 
 void MainGUI::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
     setButtonsEnabled(true);
-    ui->downloadButton->setText("Download");
+    ui->downloadButton->setText(tr("Download"));
 
     // set status according to exit code
     if (exitStatus == QProcess::NormalExit && exitCode == 0) {
         setLabelColor(ui->status, finishedColor);
-        ui->status->setText("Download finished!");
+        ui->status->setText(tr("Download finished!"));
     } else {
         setLabelColor(ui->status, errorColor);
-        ui->status->setText("Error, download failed!");
+        ui->status->setText(tr("Error, download failed!"));
 
         QString errorOutput = process->readAllStandardError();
         if (errorOutput.isEmpty()) {
-            errorOutput = "Unknown error (exit code: " + QString::number(exitCode) + ")";
+            errorOutput = tr("Unknown error (exit code: %1)").arg(exitCode);
         }
 
-        QMessageBox::critical(this, "Download Failed",
-                              "The download process failed.\n\n"
-                              "Error details:\n" + errorOutput);
+        QMessageBox::critical(this, tr("Download Failed"),
+                              tr("The download process failed.\n\nError details:\n%1").arg(errorOutput));
     }
 }
 

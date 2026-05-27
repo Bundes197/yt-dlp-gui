@@ -49,15 +49,15 @@ void MainGUI::detectBinaries() {
 
     if (!ffmpegFound || !ytdlpFound) {
         if (!ffmpegFound && !ytdlpFound) {
-            QMessageBox::warning(this, "Warning", "yt-dlp and ffmpeg not found!");
+            QMessageBox::warning(this, tr("Warning"), tr("yt-dlp and ffmpeg not found!"));
         } else if (!ytdlpFound) {
-            QMessageBox::warning(this, "Warning", "yt-dlp not found!");
+            QMessageBox::warning(this, tr("Warning"), tr("yt-dlp not found!"));
         } else {
-            QMessageBox::warning(this, "Warning", "ffmpeg not found!");
+            QMessageBox::warning(this, tr("Warning"), tr("ffmpeg not found!"));
         }
 
         ui->downloadButton->setEnabled(false);
-        ui->status->setText("Disabled, binaries not found. If installed, restart the app.");
+        ui->status->setText(tr("Disabled, binaries not found. If installed, restart the app."));
     } else {
         ui->downloadButton->setEnabled(true);
     }
