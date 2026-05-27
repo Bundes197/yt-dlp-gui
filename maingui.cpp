@@ -195,7 +195,7 @@ void MainGUI::onProcessNewOutput() {
 }
 
 // update label color
-void MainGUI::setLabelColor(QLabel* label, QColor color) {
+void MainGUI::setLabelColor(QLabel * label, QColor color) {
     QPalette palette = label->palette();
     palette.setColor(QPalette::WindowText, color);
     label->setPalette(palette);

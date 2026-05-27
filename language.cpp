@@ -3,9 +3,22 @@
 
 void MainGUI::changeEvent(QEvent * event)
 {
-    if (event->type() == QEvent::LanguageChange) {
+    if (ui && ui->status) {
+        QColor currentColor = ui->status->palette().color(QPalette::WindowText);
+
         ui->retranslateUi(this);
+
+        if (currentColor == finishedColor) {
+            ui->status->setText(tr("Download finished!"));
+        }
+        else if (currentColor == errorColor) {
+            ui->status->setText(tr("Error, download failed!"));
+        }
+        else if (process && process->state() == QProcess::Running) {
+            ui->status->setText(tr("Downloading..."));
+        }
     }
+
     QMainWindow::changeEvent(event);
 }
 
