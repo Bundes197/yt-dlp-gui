@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <QProcess>
 #include <QtWidgets/qlabel.h>
+#include <QTranslator>
+#include <QEvent>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -18,6 +20,9 @@ public:
     MainGUI(QWidget *parent = nullptr);
     ~MainGUI();
 
+protected:
+    void changeEvent(QEvent * event) override;
+
 private slots:
     void on_directoryButton_clicked();
 
@@ -27,9 +32,14 @@ private slots:
 
     void onProcessNewOutput();
 
+    void on_enButton_clicked();
+
+    void on_czButton_clicked();
+
 private:
     Ui::MainGUI *ui;
     QProcess *process;
+    QTranslator appTranslator;
 
     QString ytdlpPath;
     QString ffmpegPath;

@@ -27,6 +27,17 @@ MainGUI::MainGUI(QWidget *parent)
     ui->errorLabel->setSizePolicy(sp);
     ui->errorLabel->hide();
 
+    // set language automatically from system
+    const QStringList uiLanguages = QLocale::system().uiLanguages();
+    for (const QString &locale : uiLanguages) {
+        const QString baseName = "yt-dlp-gui_" + QLocale(locale).name();
+
+        if (appTranslator.load(":/i18n/" + baseName)) {
+            qApp->installTranslator(&appTranslator);
+            break;
+        }
+    }
+
 
     // connect color mode change in OS
     auto hints = QGuiApplication::styleHints();
@@ -226,4 +237,27 @@ void MainGUI::setButtonsEnabled(bool enabled) {
     ui->downloadButton->setCursor(enabled ? Qt::PointingHandCursor : Qt::ArrowCursor);
     ui->directoryButton->setEnabled(enabled);
     ui->directoryButton->setCursor(enabled ? Qt::PointingHandCursor : Qt::ArrowCursor);
+}
+
+void MainGUI::changeEvent(QEvent * event)
+{
+    if (event->type() == QEvent::LanguageChange) {
+        ui->retranslateUi(this);
+    }
+    QMainWindow::changeEvent(event);
+}
+
+void MainGUI::on_enButton_clicked() {
+    qApp->removeTranslator(&appTranslator);
+
+    QEvent languageChangeEvent(QEvent::LanguageChange);
+    QGuiApplication::sendEvent(this, &languageChangeEvent);
+}
+
+void MainGUI::on_czButton_clicked() {
+    qApp->removeTranslator(&appTranslator);
+
+    if (appTranslator.load(":/i18n/yt-dlp-gui_cs")) {
+        qApp->installTranslator(&appTranslator);
+    }
 }
