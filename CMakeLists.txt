@@ -77,3 +77,24 @@ install(TARGETS yt-dlp-gui
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(yt-dlp-gui)
 endif()
+
+
+
+enable_testing()
+
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Test)
+
+add_executable(yt-dlp-gui-tests
+    tests.cpp
+    utils.cpp
+    maingui.cpp
+    language.cpp
+    maingui.ui
+)
+
+target_link_libraries(yt-dlp-gui-tests PRIVATE
+    Qt${QT_VERSION_MAJOR}::Widgets
+    Qt${QT_VERSION_MAJOR}::Test
+)
+
+add_test(NAME LogicTests COMMAND yt-dlp-gui-tests)

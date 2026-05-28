@@ -149,9 +149,16 @@ QString MainGUI::sanitizeFilename(const QString & filename) {
     QString clean = filename.trimmed();
 
     clean.remove(QRegularExpression("[/\\\\]"));
-    clean.remove("..");
 
     clean.remove(QRegularExpression("[<>:\"|?*]"));
+
+    clean.replace(QRegularExpression("\\.{2,}"), ".");
+
+    clean.replace(" ", "_");
+
+    if (clean.startsWith(".")) {
+        clean.remove(0, 1);
+    }
 
     if (clean.length() > 255) {
         clean = clean.left(255);
@@ -173,7 +180,10 @@ bool MainGUI::isValidUrl(const QString & url) {
 
 bool MainGUI::isValidDirectory(const QString & path) {
     QDir dir(path);
-    if (!dir.exists()) return false;
+
+    if (!dir.exists()) {
+        return false;
+    }
 
     QFileInfo dirInfo(path);
     return dirInfo.isWritable();

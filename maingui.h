@@ -13,8 +13,12 @@ class MainGUI;
 }
 QT_END_NAMESPACE
 
+class AppTests;
+
 class MainGUI : public QMainWindow {
     Q_OBJECT
+
+    friend class AppTests;
 
 public:
     MainGUI(QWidget *parent = nullptr);
@@ -67,10 +71,10 @@ private:
 
     void setButtonsEnabled(bool enabled);
 
-    QString sanitizeFilename(const QString & filename);
+    static QString sanitizeFilename(const QString & filename);
 
-    bool isValidUrl(const QString & url);
+    static bool isValidUrl(const QString & url);
 
-    bool isValidDirectory(const QString & path);
+    static bool isValidDirectory(const QString & path);
 };
 #endif // MAINGUI_H
