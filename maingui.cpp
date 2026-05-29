@@ -27,6 +27,10 @@ MainGUI::MainGUI(QWidget *parent)
     ui->errorLabel->setSizePolicy(sp);
     ui->errorLabel->hide();
 
+    // set detect binaries button invsible by default
+    ui->detectButton->hide();
+    ui->detectButton->setEnabled(false);
+
     // set language automatically from system
     const QStringList uiLanguages = QLocale::system().uiLanguages();
     for (const QString &locale : uiLanguages) {
@@ -37,7 +41,6 @@ MainGUI::MainGUI(QWidget *parent)
             break;
         }
     }
-
 
     // connect color mode change in OS
     auto hints = QGuiApplication::styleHints();
@@ -75,7 +78,7 @@ void MainGUI::on_downloadButton_clicked() {
     if (!QFile::exists(ytdlpPath) || !QFile::exists(ffmpegPath)) {
         QMessageBox::warning(this, tr("Warning"), tr("Binaries disappeared! Checking again..."));
 
-        detectBinaries();
+        detectBinaries(false);
         return;
     }
 
@@ -151,6 +154,10 @@ void MainGUI::on_downloadButton_clicked() {
     ui->status->setText(tr("Downloading..."));
     setButtonsEnabled(false);
     ui->downloadButton->setText(tr("Downloading..."));
+}
+
+void MainGUI::on_detectButton_clicked() {
+    detectBinaries(false);
 }
 
 void MainGUI::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {

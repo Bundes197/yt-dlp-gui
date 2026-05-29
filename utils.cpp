@@ -6,7 +6,7 @@
 #include <QUrl>
 #include <QDir>
 
-void MainGUI::detectBinaries() {
+void MainGUI::detectBinaries(bool silent) {
     bool ytdlpFound = false;
     bool ffmpegFound = false;
 
@@ -48,18 +48,31 @@ void MainGUI::detectBinaries() {
     }
 
     if (!ffmpegFound || !ytdlpFound) {
-        if (!ffmpegFound && !ytdlpFound) {
-            QMessageBox::warning(this, tr("Warning"), tr("yt-dlp and ffmpeg not found!"));
-        } else if (!ytdlpFound) {
-            QMessageBox::warning(this, tr("Warning"), tr("yt-dlp not found!"));
-        } else {
-            QMessageBox::warning(this, tr("Warning"), tr("ffmpeg not found!"));
+        if (!silent) {
+            if (!ffmpegFound && !ytdlpFound) {
+                QMessageBox::warning(this, tr("Warning"), tr("yt-dlp and ffmpeg not found!"));
+            } else if (!ytdlpFound) {
+                QMessageBox::warning(this, tr("Warning"), tr("yt-dlp not found!"));
+            } else {
+                QMessageBox::warning(this, tr("Warning"), tr("ffmpeg not found!"));
+            }
         }
 
         ui->downloadButton->setEnabled(false);
-        ui->status->setText(tr("Disabled, binaries not found. If installed, restart the app."));
+
+        setLabelColor(ui->status, errorColor);
+        ui->status->setText(tr("Disabled, binaries not found."));
+
+        ui->detectButton->show();
+        ui->detectButton->setEnabled(true);
     } else {
         ui->downloadButton->setEnabled(true);
+
+        ui->status->setPalette(QPalette());
+        ui->status->setText(tr("Waiting"));
+
+        ui->detectButton->hide();
+        ui->detectButton->setEnabled(false);
     }
 }
 

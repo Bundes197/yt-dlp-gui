@@ -817,6 +817,26 @@ QPushButton:hover {
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="detectButton">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+}</string>
+        </property>
+        <property name="text">
+         <string>Detect Binaries</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <spacer name="horizontalSpacer_8">
         <property name="orientation">
          <enum>Qt::Orientation::Horizontal</enum>
@@ -850,7 +870,7 @@ QPushButton:hover {
      <x>0</x>
      <y>0</y>
      <width>616</width>
-     <height>33</height>
+     <height>30</height>
     </rect>
    </property>
   </widget>

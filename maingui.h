@@ -40,6 +40,8 @@ private slots:
 
     void on_czButton_clicked();
 
+    void on_detectButton_clicked();
+
 private:
     Ui::MainGUI *ui;
     QProcess *process;
@@ -59,7 +61,7 @@ private:
 
     static const QRegularExpression progressRegex;
 
-    void detectBinaries();
+    void detectBinaries(bool silent = true);
 
     QString getSelectedFormat() const;
 
