@@ -6,6 +6,7 @@ A simple, cross-platform GUI extension for YouTube downloader yt-dlp, built with
 * Choose between downloading Audio only (MP3, M4A, FLAC, etc.) or Video (MP4, MKV, WebM, etc.).
 * Built-in rate-limiting to avoid IP bans.
 * Automatic dark/light mode switching based on your OS settings.
+* English and Czech language support
 
 ## Prerequisites
 For this app to work, you **must** have `yt-dlp` and `ffmpeg` installed on your system. The app will search for these binaries automatically.
