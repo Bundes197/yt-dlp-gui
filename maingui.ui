@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>616</width>
-    <height>659</height>
+    <height>666</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -128,7 +128,7 @@ QPushButton:hover {
        <enum>QTabWidget::TabShape::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <property name="iconSize">
        <size>
@@ -542,13 +542,117 @@ QPushButton:hover {
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
-         <widget class="QLabel" name="comingSoonLabel">
-          <property name="text">
-           <string>Coming Soon!</string>
+         <widget class="QTabWidget" name="advancedFormatTabs">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
           </property>
-          <property name="alignment">
-           <set>Qt::AlignmentFlag::AlignCenter</set>
+          <property name="currentIndex">
+           <number>0</number>
           </property>
+          <widget class="QWidget" name="advancedAudioTab">
+           <attribute name="title">
+            <string>Audio</string>
+           </attribute>
+           <layout class="QGridLayout" name="gridLayout_3">
+            <property name="leftMargin">
+             <number>10</number>
+            </property>
+            <property name="topMargin">
+             <number>10</number>
+            </property>
+            <property name="rightMargin">
+             <number>10</number>
+            </property>
+            <property name="bottomMargin">
+             <number>10</number>
+            </property>
+            <property name="horizontalSpacing">
+             <number>0</number>
+            </property>
+            <property name="verticalSpacing">
+             <number>10</number>
+            </property>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="advancedVideoTab">
+           <attribute name="title">
+            <string>Video</string>
+           </attribute>
+           <layout class="QGridLayout" name="gridLayout_4">
+            <property name="leftMargin">
+             <number>10</number>
+            </property>
+            <property name="topMargin">
+             <number>10</number>
+            </property>
+            <property name="rightMargin">
+             <number>10</number>
+            </property>
+            <property name="bottomMargin">
+             <number>10</number>
+            </property>
+            <property name="horizontalSpacing">
+             <number>0</number>
+            </property>
+            <property name="verticalSpacing">
+             <number>10</number>
+            </property>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTabWidget" name="advancedQuantityTabs">
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <widget class="QWidget" name="advancedSingleTab">
+           <attribute name="title">
+            <string>Single</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_8">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <property name="leftMargin">
+             <number>5</number>
+            </property>
+            <property name="topMargin">
+             <number>5</number>
+            </property>
+            <property name="rightMargin">
+             <number>5</number>
+            </property>
+            <property name="bottomMargin">
+             <number>5</number>
+            </property>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="advancedPlaylistTab">
+           <attribute name="title">
+            <string>Playlist</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_9">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <property name="leftMargin">
+             <number>5</number>
+            </property>
+            <property name="topMargin">
+             <number>5</number>
+            </property>
+            <property name="rightMargin">
+             <number>5</number>
+            </property>
+            <property name="bottomMargin">
+             <number>5</number>
+            </property>
+           </layout>
+          </widget>
          </widget>
         </item>
        </layout>

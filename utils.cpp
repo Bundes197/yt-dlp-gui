@@ -116,43 +116,48 @@ void MainGUI::addArguments(const QString & url, const QString & directoryPath) {
         << "--ffmpeg-location" << ffmpegPath
         << "-P" << directoryPath;
 
-    // AUDIO and VIDEO
-    QString format = getSelectedFormat();
 
-    if (ui->formatTabs->currentIndex() == 0) {
-        // AUDIO is selected
-        args << "-x" << "--audio-format" << format;
-    } else {
-        // VIDEO is selected
-        args << "-f" << "bestvideo+bestaudio/best";
+    if (ui->settingsTab->currentIndex() == 0) {
+        // SIMPLE tab is selected, AUDIO and VIDEO
+        QString format = getSelectedFormat();
 
-        if (format == "mp4" || format == "mkv" || format == "webm") {
-            args << "--merge-output-format" << format;
+        if (ui->formatTabs->currentIndex() == 0) {
+            // AUDIO is selected
+            args << "-x" << "--audio-format" << format;
         } else {
-            // MOV, AVI, FLV - recode needed
-            args << "--recode-video" << format;
+            // VIDEO is selected
+            args << "-f" << "bestvideo+bestaudio/best";
+
+            if (format == "mp4" || format == "mkv" || format == "webm") {
+                args << "--merge-output-format" << format;
+            } else {
+                // MOV, AVI, FLV - recode needed
+                args << "--recode-video" << format;
+            }
         }
-    }
 
-    // SINGLE FILE AND PLAYLIST
-    if (ui->quantityTabs->currentIndex() == 0) {
-        // SINGLE download is selected
-        QString fileName = ui->fileNameInput->text().trimmed();
+        // SINGLE FILE AND PLAYLIST
+        if (ui->quantityTabs->currentIndex() == 0) {
+            // SINGLE download is selected
+            QString fileName = ui->fileNameInput->text().trimmed();
 
-        // disable path traversal and regex, protection against file rewrite
-        QString cleanFileName = sanitizeFilename(fileName);
+            // disable path traversal and regex, protection against file rewrite
+            QString cleanFileName = sanitizeFilename(fileName);
 
-        if (!cleanFileName.isEmpty()) {
-            args << "-o" << cleanFileName;
+            if (!cleanFileName.isEmpty()) {
+                args << "-o" << cleanFileName;
+            }
+        } else {
+            // PLAYLIST download is selected
+            if (ui->ignoreErrCheckBox->isChecked()) {
+                // ignore error if one video from playlist cannot be downloaded
+                args << "-i";
+            }
+
+            args << "--yes-playlist";
         }
     } else {
-        // PLAYLIST download is selected
-        if (ui->ignoreErrCheckBox->isChecked()) {
-            // ignore error if one video from playlist cannot be downloaded
-            args << "-i";
-        }
-
-        args << "--yes-playlist";
+        // ADVANCED tab is selected, AUDIO and VIDEO
     }
 
     args << url;
