@@ -123,15 +123,19 @@ void MainGUI::addArguments(const QString & url, const QString & directoryPath) {
 
         if (ui->formatTabs->currentIndex() == 0) {
             // AUDIO is selected
-            args << "-x" << "--audio-format" << format;
+            args << "-x";
+            if (format != "best") {
+                args << "--audio-format" << format;
+            }
+
         } else {
             // VIDEO is selected
-            args << "-f" << "bestvideo+bestaudio/best";
+            args << "-f" << "bv+ba/b";
 
-            if (format == "mp4" || format == "mkv" || format == "webm") {
+            if (format == "mkv" || format == "webm") {
                 args << "--merge-output-format" << format;
             } else {
-                // MOV, AVI, FLV - recode needed
+                // MP4, MOV, AVI, FLV - recode needed
                 args << "--recode-video" << format;
             }
         }

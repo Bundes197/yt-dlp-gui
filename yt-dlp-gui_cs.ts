@@ -26,11 +26,13 @@
     </message>
     <message>
         <location filename="maingui.ui" line="166"/>
+        <location filename="maingui.ui" line="557"/>
         <source>Audio</source>
         <translation>Audio</translation>
     </message>
     <message>
         <location filename="maingui.ui" line="203"/>
+        <location filename="maingui.ui" line="583"/>
         <source>M4A</source>
         <translation>M4A</translation>
     </message>
@@ -41,61 +43,73 @@
     </message>
     <message>
         <location filename="maingui.ui" line="246"/>
+        <location filename="maingui.ui" line="588"/>
         <source>Opus</source>
         <translation>Opus</translation>
     </message>
     <message>
         <location filename="maingui.ui" line="259"/>
+        <location filename="maingui.ui" line="593"/>
         <source>MP3</source>
         <translation>MP3</translation>
     </message>
     <message>
         <location filename="maingui.ui" line="269"/>
+        <location filename="maingui.ui" line="603"/>
         <source>WAV</source>
         <translation>WAV</translation>
     </message>
     <message>
         <location filename="maingui.ui" line="279"/>
+        <location filename="maingui.ui" line="598"/>
         <source>FLAC</source>
         <translation>FLAC</translation>
     </message>
     <message>
         <location filename="maingui.ui" line="287"/>
+        <location filename="maingui.ui" line="637"/>
         <source>Video</source>
         <translation>Video</translation>
     </message>
     <message>
         <location filename="maingui.ui" line="311"/>
+        <location filename="maingui.ui" line="673"/>
         <source>WebM</source>
         <translation>WebM</translation>
     </message>
     <message>
         <location filename="maingui.ui" line="344"/>
+        <location filename="maingui.ui" line="683"/>
         <source>AVI</source>
         <translation>AVI</translation>
     </message>
     <message>
         <location filename="maingui.ui" line="351"/>
+        <location filename="maingui.ui" line="688"/>
         <source>FLV</source>
         <translation>FLV</translation>
     </message>
     <message>
         <location filename="maingui.ui" line="358"/>
+        <location filename="maingui.ui" line="663"/>
         <source>MP4</source>
         <translation>MP4</translation>
     </message>
     <message>
         <location filename="maingui.ui" line="368"/>
+        <location filename="maingui.ui" line="668"/>
         <source>MKV</source>
         <translation>MKV</translation>
     </message>
     <message>
         <location filename="maingui.ui" line="375"/>
+        <location filename="maingui.ui" line="678"/>
         <source>MOV</source>
         <translation>MOV</translation>
     </message>
     <message>
         <location filename="maingui.ui" line="403"/>
+        <location filename="maingui.ui" line="736"/>
         <source>Single</source>
         <translation>Jednotlivě</translation>
     </message>
@@ -106,6 +120,7 @@
     </message>
     <message>
         <location filename="maingui.ui" line="478"/>
+        <location filename="maingui.ui" line="758"/>
         <source>Playlist</source>
         <translation>Playlist</translation>
     </message>
@@ -120,46 +135,77 @@
         <translation>Pokročilé</translation>
     </message>
     <message>
-        <location filename="maingui.ui" line="547"/>
-        <source>Coming Soon!</source>
-        <translation>Již brzy!</translation>
+        <location filename="maingui.ui" line="575"/>
+        <location filename="maingui.ui" line="655"/>
+        <source>Container:</source>
+        <translation>Kontejner:</translation>
     </message>
     <message>
-        <location filename="maingui.ui" line="592"/>
+        <location filename="maingui.ui" line="608"/>
+        <source>OGG</source>
+        <translation>OGG</translation>
+    </message>
+    <message>
+        <location filename="maingui.ui" line="613"/>
+        <source>AAC</source>
+        <translation>AAC</translation>
+    </message>
+    <message>
+        <location filename="maingui.ui" line="618"/>
+        <source>ALAC</source>
+        <translation>ALAC</translation>
+    </message>
+    <message>
+        <location filename="maingui.ui" line="626"/>
+        <location filename="maingui.ui" line="700"/>
+        <source>Audio Codec:</source>
+        <translation>Audio Kodek:</translation>
+    </message>
+    <message>
+        <location filename="maingui.ui" line="714"/>
+        <source>Video Codec:</source>
+        <translation>Video Kodek:</translation>
+    </message>
+    <message>
+        <source>Coming Soon!</source>
+        <translation type="vanished">Již brzy!</translation>
+    </message>
+    <message>
+        <location filename="maingui.ui" line="818"/>
         <source>URL:</source>
         <translation>URL:</translation>
     </message>
     <message>
-        <location filename="maingui.ui" line="654"/>
+        <location filename="maingui.ui" line="880"/>
         <source>Select Directory</source>
         <translation>Vybrat adresář</translation>
     </message>
     <message>
-        <location filename="maingui.ui" line="719"/>
+        <location filename="maingui.ui" line="945"/>
         <location filename="maingui.cpp" line="148"/>
         <location filename="maingui.cpp" line="165"/>
         <source>Download</source>
         <translation>Stáhnout</translation>
     </message>
     <message>
-        <location filename="maingui.ui" line="746"/>
+        <location filename="maingui.ui" line="972"/>
         <location filename="maingui.cpp" line="93"/>
         <source>URL is missing!</source>
         <translation>Chybí URL!</translation>
     </message>
     <message>
-        <location filename="maingui.ui" line="799"/>
+        <location filename="maingui.ui" line="1025"/>
         <source>Status:</source>
         <translation>Status:</translation>
     </message>
     <message>
-        <location filename="maingui.ui" line="812"/>
+        <location filename="maingui.ui" line="1038"/>
         <location filename="utils.cpp" line="72"/>
         <source>Waiting</source>
         <translation>Čekám</translation>
     </message>
     <message>
-        <location filename="maingui.ui" line="835"/>
+        <location filename="maingui.ui" line="1061"/>
         <source>Detect Binaries</source>
         <translation>Detekovat spustitelné soubory</translation>
     </message>

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>616</width>
-    <height>666</height>
+    <height>697</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -556,7 +556,7 @@ QPushButton:hover {
            <attribute name="title">
             <string>Audio</string>
            </attribute>
-           <layout class="QGridLayout" name="gridLayout_3">
+           <layout class="QVBoxLayout" name="verticalLayout_10">
             <property name="leftMargin">
              <number>10</number>
             </property>
@@ -569,19 +569,88 @@ QPushButton:hover {
             <property name="bottomMargin">
              <number>10</number>
             </property>
-            <property name="horizontalSpacing">
-             <number>0</number>
-            </property>
-            <property name="verticalSpacing">
-             <number>10</number>
-            </property>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_16">
+              <property name="spacing">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QLabel" name="audioContainerLabel">
+                <property name="text">
+                 <string>Container:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="audioContainerDropdown">
+                <item>
+                 <property name="text">
+                  <string>M4A</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Opus</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>MP3</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>FLAC</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>WAV</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>OGG</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>AAC</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>ALAC</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_15">
+              <property name="spacing">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QLabel" name="audioAudioCodecLabel">
+                <property name="text">
+                 <string>Audio Codec:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="audioAudioCodecDropdown"/>
+              </item>
+             </layout>
+            </item>
            </layout>
           </widget>
           <widget class="QWidget" name="advancedVideoTab">
            <attribute name="title">
             <string>Video</string>
            </attribute>
-           <layout class="QGridLayout" name="gridLayout_4">
+           <layout class="QVBoxLayout" name="verticalLayout_11">
             <property name="leftMargin">
              <number>10</number>
             </property>
@@ -594,12 +663,95 @@ QPushButton:hover {
             <property name="bottomMargin">
              <number>10</number>
             </property>
-            <property name="horizontalSpacing">
-             <number>0</number>
-            </property>
-            <property name="verticalSpacing">
-             <number>10</number>
-            </property>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_14">
+              <property name="spacing">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QLabel" name="videoContainerLabel">
+                <property name="text">
+                 <string>Container:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="videoContainerDropdown">
+                <item>
+                 <property name="text">
+                  <string>MP4</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>MKV</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>WebM</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>MOV</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>AVI</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>FLV</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_9">
+              <property name="spacing">
+               <number>0</number>
+              </property>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_13">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QLabel" name="videoAudioCodecLabel">
+                  <property name="text">
+                   <string>Audio Codec:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QComboBox" name="videoAudioCodecDropdown"/>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_12">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QLabel" name="videoVideoCodecLabel">
+                  <property name="text">
+                   <string>Video Codec:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QComboBox" name="videoVideoCodecDropdown"/>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </item>
            </layout>
           </widget>
          </widget>
@@ -974,7 +1126,7 @@ QPushButton:hover {
      <x>0</x>
      <y>0</y>
      <width>616</width>
-     <height>30</height>
+     <height>33</height>
     </rect>
    </property>
   </widget>

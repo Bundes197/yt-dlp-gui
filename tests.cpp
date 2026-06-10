@@ -35,6 +35,7 @@ private slots:
     void testFormatSelection() {
         MainGUI gui;
 
+        gui.ui->settingsTab->setCurrentIndex(0);
         gui.ui->formatTabs->setCurrentIndex(0);
         gui.ui->flacButton->setChecked(true);
         QCOMPARE(gui.getSelectedFormat(), QString("flac"));
@@ -48,6 +49,7 @@ private slots:
         MainGUI gui;
         gui.args.clear();
 
+        gui.ui->settingsTab->setCurrentIndex(0);
         gui.ui->formatTabs->setCurrentIndex(0);
         gui.ui->mp3Button->setChecked(true);
         gui.ui->quantityTabs->setCurrentIndex(0);
