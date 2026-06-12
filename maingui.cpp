@@ -54,6 +54,26 @@ MainGUI::MainGUI(QWidget *parent)
     // progress bar not natively rendering in macOS (idk why), using Fusion style
     ui->progressBar->setStyle(QStyleFactory::create("Fusion"));
 
+    // automatically update available codecs
+    connect(ui->audioContainerDropdown, &QComboBox::currentTextChanged, this, [this]() {
+        showAvailableCodecs();
+    });
+
+    connect(ui->videoContainerDropdown, &QComboBox::currentTextChanged, this, [this]() {
+        showAvailableCodecs();
+    });
+
+    connect(ui->advancedFormatTabs, &QTabWidget::currentChanged, this, [this]() {
+        showAvailableCodecs();
+    });
+
+    connect(ui->settingsTab, &QTabWidget::currentChanged, this, [this]() {
+        showAvailableCodecs();
+    });
+
+    showAvailableCodecs();
+
+    // automatically detect binaries
     detectBinaries();
 }
 
@@ -244,4 +264,55 @@ void MainGUI::setButtonsEnabled(bool enabled) {
     ui->downloadButton->setCursor(enabled ? Qt::PointingHandCursor : Qt::ArrowCursor);
     ui->directoryButton->setEnabled(enabled);
     ui->directoryButton->setCursor(enabled ? Qt::PointingHandCursor : Qt::ArrowCursor);
+}
+
+void MainGUI::showAvailableCodecs() {
+    // ADVANCED tab has to be selected
+    if (ui->settingsTab->currentIndex() == 1) {
+        if (ui->advancedFormatTabs->currentIndex() == 0) {
+            // AUDIO is selected, set audio codecs
+            ui->audioAudioCodecDropdown->clear();
+            ui->audioAudioCodecDropdown->setEnabled(true);
+
+            QString currentContainer = ui->audioContainerDropdown->currentText();
+            if (currentContainer == "M4A") {
+                ui->audioAudioCodecDropdown->addItems({"aac", "alac"});
+            } else if (currentContainer == "WAV") {
+                ui->audioAudioCodecDropdown->addItems({"pcm", "mp3", "flac"});
+            } else if (currentContainer == "OGG") {
+                ui->audioAudioCodecDropdown->addItems({"opus", "vorbis", "flac"});
+            } else {
+                ui->audioAudioCodecDropdown->addItems({currentContainer.toLower()});
+                ui->audioAudioCodecDropdown->setEnabled(false);
+            }
+        } else {
+            // VIDEO is selected, set audio and video codecs
+            ui->videoAudioCodecDropdown->clear();
+            ui->videoVideoCodecDropdown->clear();
+
+            ui->videoAudioCodecDropdown->setEnabled(true);
+            ui->videoVideoCodecDropdown->setEnabled(true);
+
+            QString currentContainer = ui->videoContainerDropdown->currentText();
+            if (currentContainer == "MP4") {
+                ui->videoVideoCodecDropdown->addItems({"avc1 (H.264)", "av01 (AV1)", "hev1 (H.265)"});
+                ui->videoAudioCodecDropdown->addItems({"mp4a (AAC)", "mp3"});
+            } else if (currentContainer == "MKV") {
+                ui->videoVideoCodecDropdown->addItems({"avc1 (H.264)", "vp9", "av01 (AV1)", "hev1 (H.265)"});
+                ui->videoAudioCodecDropdown->addItems({"mp4a (AAC)", "opus", "mp3", "flac"});
+            } else if (currentContainer == "WebM") {
+                ui->videoVideoCodecDropdown->addItems({"vp9", "av01 (AV1)"});
+                ui->videoAudioCodecDropdown->addItems({"opus", "vorbis"});
+            } else if (currentContainer == "MOV") {
+                ui->videoVideoCodecDropdown->addItems({"avc1 (H.264)", "hev1 (H.265)", "prores"});
+                ui->videoAudioCodecDropdown->addItems({"mp4a (AAC)", "pcm"});
+            } else if (currentContainer == "AVI") {
+                ui->videoVideoCodecDropdown->addItems({"mpeg4 (Xvid)", "avc1 (H.264)"});
+                ui->videoAudioCodecDropdown->addItems({"mp3", "pcm"});
+            } else if (currentContainer == "FLV") {
+                ui->videoVideoCodecDropdown->addItems({"avc1 (H.264)", "flv1"});
+                ui->videoAudioCodecDropdown->addItems({"mp4a (AAC)", "mp3"});
+            }
+        }
+    }
 }

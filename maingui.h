@@ -73,6 +73,8 @@ private:
 
     void setButtonsEnabled(bool enabled);
 
+    void showAvailableCodecs();
+
     static QString sanitizeFilename(const QString & filename);
 
     static bool isValidUrl(const QString & url);
